@@ -26,7 +26,7 @@ public class AlumnoDaoMemoryImpl implements AlumnoDao {
     @Override
     public Alumno findAlumno(String apellidoAlumno) {
         for (Alumno a: repositorioAlumnos.values()) {
-            if (a.getApellido().equals(apellidoAlumno)){
+            if (a.getApellido().startsWith(apellidoAlumno)){
                 return a;
             }
         }
