@@ -6,9 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 
 @Service
@@ -26,8 +24,7 @@ public class AlumnoDaoMemoryImpl implements AlumnoDao {
     @Override
     public Alumno findAlumno(String apellidoAlumno) {
         for (Alumno a: repositorioAlumnos.values()) {
-            if (a.getApellido().startsWith(apellidoAlumno)){
-                return a;
+            if (a.getApellido().equals(apellidoAlumno)){
             }
         }
         throw new ResponseStatusException(
