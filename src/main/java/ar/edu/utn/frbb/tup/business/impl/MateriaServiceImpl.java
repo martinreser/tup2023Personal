@@ -7,6 +7,7 @@ import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
 import ar.edu.utn.frbb.tup.persistence.MateriaDao;
 import ar.edu.utn.frbb.tup.persistence.MateriaDaoMemoryImpl;
+import ar.edu.utn.frbb.tup.persistence.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,5 +39,10 @@ public class MateriaServiceImpl implements MateriaService {
     @Override
     public List<Materia> getAllMaterias() {
         return null;
+    }
+
+    @Override
+    public Materia buscarMateriaPorId(Integer id) throws NotFoundException {
+        return dao.buscarMateriaPorId(id);
     }
 }
