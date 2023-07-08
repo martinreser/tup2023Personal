@@ -1,7 +1,6 @@
 package ar.edu.utn.frbb.tup.controller.handler;
 
-import ar.edu.utn.frbb.tup.persistence.exception.DaoException;
-import ar.edu.utn.frbb.tup.persistence.exception.NotFoundException;
+import ar.edu.utn.frbb.tup.persistence.exception.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +15,14 @@ public class UtnResponseEntityExceptionHandler extends ResponseEntityExceptionHa
     //.
 
     @ExceptionHandler(value
-            = { NotFoundException.class })
+            = { MateriaNotFoundException.class, AlumnoNotFoundException.class, ProfesorNotFoundException.class, AsignaturaNotFoundException.class})
     protected ResponseEntity<Object> notFound(
-            RuntimeException ex, WebRequest request) {
+            Exception ex, WebRequest request) {
         String exceptionMessage = ex.getMessage();
         CustomApiError error = new CustomApiError();
-        error.setErrorCode(404);
-        error.setErrorMessage("No existe ninguna materia con el id ingresado.");
+        error.setErrorMessage(exceptionMessage);
         return handleExceptionInternal(ex, error,
-                new HttpHeaders(), HttpStatus.CONFLICT, request);
+                new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
     @ExceptionHandler(value
             = { IllegalArgumentException.class, IllegalStateException.class })

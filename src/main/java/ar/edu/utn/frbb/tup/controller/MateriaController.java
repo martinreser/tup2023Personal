@@ -4,7 +4,8 @@ import ar.edu.utn.frbb.tup.business.MateriaService;
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.Profesor;
 import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
-import ar.edu.utn.frbb.tup.persistence.exception.NotFoundException;
+import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
+import ar.edu.utn.frbb.tup.persistence.exception.ProfesorNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,21 +20,23 @@ public class MateriaController {
     @Autowired
     private MateriaService materiaService;
 
-    @GetMapping
-    public List<Materia> getMaterias() {
-        Materia m = new Materia("labo 1", 2, 1, new Profesor("Lucho", "Salotto", "Lic"));
-        Materia m1 = new Materia("labo 2", 2, 1, new Profesor("Juan", "Perez", "Lic"));
-
-        return Arrays.asList(m1, m);
+    // MÉTODOS POST
+    // Crear materia según body (DTO).
+    @PostMapping
+    public Materia crearMateria(@RequestBody MateriaDto materiaDto) throws ProfesorNotFoundException {
+        return materiaService.crearMateria(materiaDto);
     }
 
+    // MÉTODOS GET
+    // Buscar materia según ID.
     @GetMapping("/{idMateria}")
-    public Materia buscarMateriaPorID(@PathVariable("idMateria") Integer id) throws NotFoundException {
+    public Materia buscarMateriaPorID(@PathVariable("idMateria") Integer id) throws MateriaNotFoundException {
         return materiaService.buscarMateriaPorId(id);
     }
-    
-    @PostMapping
-    public Materia crearMateria(@RequestBody MateriaDto materiaDto){
-        return materiaService.crearMateria(materiaDto);
+
+    // Buscar materia según cadena ingresada.
+    @GetMapping
+    public List<Materia> buscarMateriaPorCadena(@RequestParam String nombre) throws MateriaNotFoundException {
+        return materiaService.buscarMateriaPorCadena(nombre);
     }
 }

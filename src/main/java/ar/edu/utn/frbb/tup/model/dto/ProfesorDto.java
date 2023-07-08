@@ -1,9 +1,9 @@
 package ar.edu.utn.frbb.tup.model.dto;
 
-public class AlumnoDto {
-    String nombre;
-    String apellido;
-    Long dni;
+public class ProfesorDto {
+    private String nombre;
+    private String apellido;
+    private String titulo;
 
     public String getNombre() {
         return nombre;
@@ -21,11 +21,11 @@ public class AlumnoDto {
         this.apellido = apellido;
     }
 
-    public long getDni() {
-        return dni;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setDni(long dni) {
-        this.dni = dni;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 }

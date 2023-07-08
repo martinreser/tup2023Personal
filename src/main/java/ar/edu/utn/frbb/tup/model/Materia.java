@@ -1,13 +1,23 @@
 package ar.edu.utn.frbb.tup.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "materiaId")
 public class Materia {
 
     private int materiaId;
     private String nombre;
+    private int anio;
+    private int cuatrimestre;
+    private Profesor profesor;
+    private List<Materia> correlatividades;
+
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -35,27 +45,20 @@ public class Materia {
 
     public void setProfesor(Profesor profesor) {
         this.profesor = profesor;
+        profesor.setMateriasDictadas(this);
     }
 
     public void setCorrelatividades(List<Materia> correlatividades) {
         this.correlatividades = correlatividades;
     }
 
-    private int anio;
-    private int cuatrimestre;
-    private Profesor profesor;
-
-    private List<Materia> correlatividades;
-
     public Materia(){}
-
 
     public Materia(String nombre, int anio, int cuatrimestre, Profesor profesor) {
         this.anio = anio;
         this.cuatrimestre = cuatrimestre;
         this.nombre = nombre;
         this.profesor = profesor;
-
         correlatividades = new ArrayList<>();
     }
 

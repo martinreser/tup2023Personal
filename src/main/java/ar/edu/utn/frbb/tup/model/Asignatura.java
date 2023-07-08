@@ -1,18 +1,24 @@
 package ar.edu.utn.frbb.tup.model;
 
 import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.util.Optional;
 
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "asignaturaId")
 public class Asignatura {
-
+    private Long asignaturaId;
     private Materia materia;
     private EstadoAsignatura estado;
     private Integer nota;
 
     public Asignatura() {
     }
-    public Asignatura(Materia materia) {
+    public Asignatura(Materia materia, long asignaturaId) {
+        this.asignaturaId = asignaturaId;
         this.materia = materia;
         this.estado = EstadoAsignatura.NO_CURSADA;
     }
@@ -55,4 +61,11 @@ public class Asignatura {
         }
     }
 
+    public Long getAsignaturaId() {
+        return asignaturaId;
+    }
+
+    public void setAsignaturaId(Long asignaturaId) {
+        this.asignaturaId = asignaturaId;
+    }
 }

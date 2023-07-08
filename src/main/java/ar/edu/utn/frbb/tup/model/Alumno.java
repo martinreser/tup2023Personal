@@ -6,28 +6,35 @@ package ar.edu.utn.frbb.tup.model;
 import ar.edu.utn.frbb.tup.model.exception.AsignaturaInexistenteException;
 import ar.edu.utn.frbb.tup.model.exception.CorrelatividadException;
 import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Alumno {
     private long id;
-
     private String nombre;
     private String apellido;
     private long dni;
-
     private List<Asignatura> asignaturas;
 
     public Alumno() {
     }
+
     public Alumno(String nombre, String apellido, long dni) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.dni = dni;
 
         asignaturas = new ArrayList<>();
+    }
 
+    public void setAsignaturas(List<Asignatura> asignaturas) {
+        this.asignaturas = asignaturas;
     }
 
     public void setNombre(String nombre) {
