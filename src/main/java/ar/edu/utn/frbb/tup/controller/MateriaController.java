@@ -23,7 +23,7 @@ public class MateriaController {
     // MÉTODOS POST
     // Crear materia según body (DTO).
     @PostMapping
-    public Materia crearMateria(@RequestBody MateriaDto materiaDto) throws ProfesorNotFoundException {
+    public Materia crearMateria(@RequestBody MateriaDto materiaDto) throws ProfesorNotFoundException, MateriaNotFoundException {
         return materiaService.crearMateria(materiaDto);
     }
 

@@ -22,7 +22,7 @@ public class MateriaServiceImpl implements MateriaService {
     private ProfesorService profesorService;
 
     @Override
-    public Materia crearMateria(MateriaDto materia) throws ProfesorNotFoundException {
+    public Materia crearMateria(MateriaDto materia) throws ProfesorNotFoundException, MateriaNotFoundException {
         Materia m = new Materia();
         m.setNombre(materia.getNombre());
         m.setAnio(materia.getAnio());

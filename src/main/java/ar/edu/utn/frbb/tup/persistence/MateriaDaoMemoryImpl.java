@@ -15,13 +15,14 @@ public class MateriaDaoMemoryImpl implements MateriaDao {
     // POST
     // Guarda una materia.
     @Override
-    public Materia save(Materia materia, int[] correlatividades) {
+    public Materia save(Materia materia, int[] correlatividades) throws MateriaNotFoundException {
         Random random = new Random();
         materia.setMateriaId(random.nextInt(999));
         repositorioMateria.put(materia.getMateriaId(), materia);
         List<Materia> listaCorrelatividades = new ArrayList<>();
         for (Integer i : correlatividades) {
-            listaCorrelatividades.add(repositorioMateria.get(i));
+            Materia m = findMateriaPorId(i);
+            listaCorrelatividades.add(m);
         }
         materia.setCorrelatividades(listaCorrelatividades);
         return materia;

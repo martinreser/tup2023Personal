@@ -9,7 +9,7 @@ import ar.edu.utn.frbb.tup.persistence.exception.ProfesorNotFoundException;
 import java.util.List;
 
 public interface MateriaService {
-    Materia crearMateria(MateriaDto inputData) throws ProfesorNotFoundException;
+    Materia crearMateria(MateriaDto inputData) throws ProfesorNotFoundException, MateriaNotFoundException;
     Materia buscarMateriaPorId(Integer id) throws MateriaNotFoundException;
     List<Materia> buscarMateriaPorCadena(String apellido) throws MateriaNotFoundException;
     List<Asignatura> getAllMaterias();

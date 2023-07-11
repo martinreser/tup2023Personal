@@ -62,8 +62,6 @@ public class MateriaControllerTest {
                 .accept(MediaType.APPLICATION_JSON)).andExpect(status().is2xxSuccessful())
                 .andReturn();
 
-
-
         Assertions.assertEquals(new Materia(), mapper.readValue(result.getResponse().getContentAsString(), Materia.class));
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
 public interface MateriaDao {
 
     // POST
-    Materia save(Materia materia, int[] correlatividades);
+    Materia save(Materia materia, int[] correlatividades) throws MateriaNotFoundException;
 
     // GET
     Materia findMateriaPorId(Integer id) throws MateriaNotFoundException;
