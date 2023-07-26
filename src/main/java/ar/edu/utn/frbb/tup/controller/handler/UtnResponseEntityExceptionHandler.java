@@ -1,5 +1,7 @@
 package ar.edu.utn.frbb.tup.controller.handler;
 
+import ar.edu.utn.frbb.tup.model.exception.CorrelatividadesNoAprobadasException;
+import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
 import ar.edu.utn.frbb.tup.persistence.exception.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,7 +17,8 @@ public class UtnResponseEntityExceptionHandler extends ResponseEntityExceptionHa
     //.
 
     @ExceptionHandler(value
-            = { MateriaNotFoundException.class, AlumnoNotFoundException.class, ProfesorNotFoundException.class, AsignaturaNotFoundException.class})
+            = { MateriaNotFoundException.class, AlumnoNotFoundException.class, ProfesorNotFoundException.class,
+            AsignaturaNotFoundException.class})
     protected ResponseEntity<Object> notFound(
             Exception ex, WebRequest request) {
         String exceptionMessage = ex.getMessage();
@@ -24,17 +27,30 @@ public class UtnResponseEntityExceptionHandler extends ResponseEntityExceptionHa
         return handleExceptionInternal(ex, error,
                 new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
+
     @ExceptionHandler(value
-            = { IllegalArgumentException.class, IllegalStateException.class })
-    protected ResponseEntity<Object> handleConflict(
-            RuntimeException ex, WebRequest request) {
+            = {CorrelatividadesNoAprobadasException.class, MateriaConNombreYaCreadoException.class, EstadoIncorrectoException.class,
+            CambiarEstadoAsignaturaException.class, NotaNoValidaException.class})
+    protected ResponseEntity<Object> notApproved(
+            Exception ex, WebRequest request) {
         String exceptionMessage = ex.getMessage();
         CustomApiError error = new CustomApiError();
-        error.setErrorCode(1234);
         error.setErrorMessage(exceptionMessage);
         return handleExceptionInternal(ex, error,
-                new HttpHeaders(), HttpStatus.CONFLICT, request);
+                new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
+
+//    @ExceptionHandler(value
+//            = { IllegalArgumentException.class, IllegalStateException.class })
+//    protected ResponseEntity<Object> handleConflict(
+//            RuntimeException ex, WebRequest request) {
+//        String exceptionMessage = ex.getMessage();
+//        CustomApiError error = new CustomApiError();
+//        error.setErrorCode(1234);
+//        error.setErrorMessage(exceptionMessage);
+//        return handleExceptionInternal(ex, error,
+//                new HttpHeaders(), HttpStatus.CONFLICT, request);
+//    }
 
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {

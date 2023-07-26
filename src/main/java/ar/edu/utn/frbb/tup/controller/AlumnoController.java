@@ -1,12 +1,14 @@
 package ar.edu.utn.frbb.tup.controller;
 
 import ar.edu.utn.frbb.tup.business.AlumnoService;
+import ar.edu.utn.frbb.tup.business.AsignaturaService;
 import ar.edu.utn.frbb.tup.model.Alumno;
 import ar.edu.utn.frbb.tup.model.Asignatura;
 import ar.edu.utn.frbb.tup.model.dto.AlumnoDto;
 import ar.edu.utn.frbb.tup.model.dto.AsignaturaDto;
-import ar.edu.utn.frbb.tup.persistence.exception.AlumnoNotFoundException;
-import ar.edu.utn.frbb.tup.persistence.exception.AsignaturaNotFoundException;
+import ar.edu.utn.frbb.tup.model.exception.CorrelatividadesNoAprobadasException;
+import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
+import ar.edu.utn.frbb.tup.persistence.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,12 +63,14 @@ public class AlumnoController {
         return alumnoService.actualizarAlumnoPorId(idAlumno, alumnoDto);
     }
 
-    // Actualizar estado de la asignatura de un alumno.
-//    @PutMapping("/{idAlumno}")
-//    public Alumno actualizarEstadoAsignaturaPorId(@PathVariable("idAlumno") Long idAlumno,
-//                                                  @RequestBody AsignaturaDto asignaturaDto) throws AlumnoNotFoundException {
-//        return alumnoService.actualizarEstadoAsignaturaPorId(idAlumno, asignaturaDto);
-//    }
+    // Actualizar estado de la asignatura de un alumno según ID.
+    @PutMapping("/{idAlumno}/asignaturas/{idAsignatura}")
+    public Asignatura actualizarEstadoAsignaturaPorId(@PathVariable("idAlumno") Long idAlumno,
+                                                  @PathVariable("idAsignatura") Long idAsignatura,
+                                                  @RequestBody AsignaturaDto asignaturaDto) throws AlumnoNotFoundException, AsignaturaNotFoundException,
+            CorrelatividadesNoAprobadasException, EstadoIncorrectoException, NotaNoValidaException, CambiarEstadoAsignaturaException {
+        return alumnoService.actualizarEstadoAsignaturaPorID(idAlumno, idAsignatura, asignaturaDto);
+    }
 
     // MÉTODOS DELETE
     // Borrar alumno según ID.

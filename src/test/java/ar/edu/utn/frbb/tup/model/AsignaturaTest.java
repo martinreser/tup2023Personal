@@ -1,14 +1,15 @@
 package ar.edu.utn.frbb.tup.model;
 
 import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
+import ar.edu.utn.frbb.tup.persistence.exception.CambiarEstadoAsignaturaException;
+import ar.edu.utn.frbb.tup.persistence.exception.NotaNoValidaException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-
-public class AsignaturaTest {
+public class AsignaturaTest{
 
     private static Materia materia;
     private static Profesor profesor;
@@ -28,7 +29,7 @@ public class AsignaturaTest {
     }
 
     @Test
-    public void testAprobarAasignatura(){
+    public void testAprobarAasignatura() throws CambiarEstadoAsignaturaException, NotaNoValidaException {
         Asignatura asignatura = new Asignatura(materia, 1);
         assertEquals(EstadoAsignatura.NO_CURSADA,asignatura.getEstado());
         asignatura.cursarAsignatura();
@@ -71,7 +72,7 @@ public class AsignaturaTest {
 //    }
 
     @Test
-    public void aprobarAsignaturaNotaDesaprobado() throws EstadoIncorrectoException {
+    public void aprobarAsignaturaNotaDesaprobado() throws EstadoIncorrectoException, CambiarEstadoAsignaturaException, NotaNoValidaException {
         Asignatura asignatura = new Asignatura(materia,1);
         asignatura.cursarAsignatura();
         asignatura.aprobarAsignatura(3);

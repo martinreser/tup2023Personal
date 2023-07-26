@@ -1,7 +1,8 @@
 package ar.edu.utn.frbb.tup.model;
 
 import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
-import ar.edu.utn.frbb.tup.model.exception.CorrelatividadesNoAprobadasException;
+import ar.edu.utn.frbb.tup.persistence.exception.CambiarEstadoAsignaturaException;
+import ar.edu.utn.frbb.tup.persistence.exception.NotaNoValidaException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -62,7 +63,7 @@ public class AlumnoTest {
     }
 
     @Test
-    public void testNewAlumnoCursandoAsignaturas(){
+    public void testNewAlumnoCursandoAsignaturas() throws CambiarEstadoAsignaturaException {
         alumno = new Alumno("Stefano", "D'Annunzio", 42431228);
         alumno.agregarAsignatura(a1);
         alumno.agregarAsignatura(a2);
@@ -81,7 +82,7 @@ public class AlumnoTest {
     }
 
     @Test
-    public void testNewAlumnoAprobandoAsignaturas() throws EstadoIncorrectoException {
+    public void testNewAlumnoAprobandoAsignaturas() throws EstadoIncorrectoException, CambiarEstadoAsignaturaException, NotaNoValidaException {
         alumno = new Alumno("Stefano", "D'Annunzio", 42431228);
         alumno.agregarAsignatura(a1);
         alumno.agregarAsignatura(a2);

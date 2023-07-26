@@ -11,15 +11,12 @@ import ar.edu.utn.frbb.tup.model.dto.AsignaturaDto;
 import ar.edu.utn.frbb.tup.model.exception.CorrelatividadesNoAprobadasException;
 import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
 import ar.edu.utn.frbb.tup.persistence.AlumnoDao;
-import ar.edu.utn.frbb.tup.persistence.AlumnoDaoMemoryImpl;
-import ar.edu.utn.frbb.tup.persistence.exception.AlumnoNotFoundException;
-import ar.edu.utn.frbb.tup.persistence.exception.AsignaturaNotFoundException;
+import ar.edu.utn.frbb.tup.persistence.exception.*;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Random;
 
 @Service
 public class AlumnoServiceImpl implements AlumnoService {
@@ -36,7 +33,7 @@ public class AlumnoServiceImpl implements AlumnoService {
         a.setNombre(alumno.getNombre());
         a.setApellido(alumno.getApellido());
         a.setDni(alumno.getDni());
-        List<Asignatura> asignaturas = asignaturaService.crearListaAsignaturas();
+        List<Asignatura> asignaturas = asignaturaService.obtenerListaAsignaturas();
         a.setAsignaturas(asignaturas);
         alumnoDao.saveAlumno(a);
         return a;
@@ -80,24 +77,44 @@ public class AlumnoServiceImpl implements AlumnoService {
     }
 
     @Override
-    public void aprobarAsignatura(int materiaId, int nota, long id) throws EstadoIncorrectoException, CorrelatividadesNoAprobadasException, AlumnoNotFoundException {
-        Asignatura a = asignaturaService.getAsignatura(materiaId, id);
-        for (Materia m:
-             a.getMateria().getCorrelatividades()) {
-            Asignatura correlativa = asignaturaService.getAsignatura(m.getMateriaId(), id);
-            if (!EstadoAsignatura.APROBADA.equals(correlativa.getEstado())) {
-                throw new CorrelatividadesNoAprobadasException("La materia " + m.getNombre() + " debe estar aprobada para aprobar " + a.getNombreAsignatura());
+    public Asignatura actualizarEstadoAsignaturaPorID(Long idAlumno, Long idAsignatura, AsignaturaDto asignaturaDto) throws EstadoIncorrectoException, CorrelatividadesNoAprobadasException,
+            AlumnoNotFoundException, AsignaturaNotFoundException, NotaNoValidaException, CambiarEstadoAsignaturaException {
+        Alumno alumno = alumnoDao.findAlumnoById(idAlumno);
+        Asignatura a = asignaturaService.getAsignaturaPorId(idAsignatura);
+        if (asignaturaDto.getCondicion().toLowerCase().equals("aprobada")){
+            for (Materia m: a.getMateria().getCorrelatividades()) {
+                Asignatura correlativa = asignaturaService.getAsignaturaPorId(idAsignatura);
+                if (!EstadoAsignatura.APROBADA.equals(correlativa.getEstado())) {
+                    throw new CorrelatividadesNoAprobadasException("La materia " + m.getNombre() + " [ID: " + correlativa.getAsignaturaId() + "] debe estar aprobada para aprobar " + a.getNombreAsignatura());
+                }
             }
+            comprobarNota(asignaturaDto.getNota());
+            a.aprobarAsignatura(asignaturaDto.getNota());
         }
-        a.aprobarAsignatura(nota);
+        else if (asignaturaDto.getCondicion().toLowerCase().equals("cursada")){
+            a.cursarAsignatura();
+        }
+        else {
+            throw new CambiarEstadoAsignaturaException("La condición de la materia solo puede ser cambiada a 'Cursada' o 'Aprobada'.");
+        }
         asignaturaService.actualizarAsignatura(a);
-        Alumno alumno = alumnoDao.findAlumnoById(id);
         alumno.actualizarAsignatura(a);
         alumnoDao.saveAlumno(alumno);
+        return a;
     }
 
     @Override
     public List<Alumno> borrarAlumnoPorId(Long id) throws AlumnoNotFoundException {
         return alumnoDao.deleteAlumnoById(id);
+    }
+
+    private boolean comprobarNota(int nota) throws NotaNoValidaException {
+        if (nota == 0){
+            throw new NotaNoValidaException("La nota no puede ser nula.");
+        }
+        if (nota > 10 || nota < 0){
+            throw new NotaNoValidaException("La nota debe ser mayor a 0 y menor a 10.");
+        }
+        return true;
     }
 }

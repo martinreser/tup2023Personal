@@ -2,8 +2,12 @@ package ar.edu.utn.frbb.tup.controller;
 
 import ar.edu.utn.frbb.tup.App;
 import ar.edu.utn.frbb.tup.business.MateriaService;
+import ar.edu.utn.frbb.tup.business.ProfesorService;
 import ar.edu.utn.frbb.tup.model.Materia;
+import ar.edu.utn.frbb.tup.model.Profesor;
 import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
+import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
+import ar.edu.utn.frbb.tup.persistence.exception.ProfesorNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,6 +31,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -37,6 +42,9 @@ public class MateriaControllerTest {
 
     @Mock
     MateriaService materiaService;
+
+    @Mock
+    ProfesorService profesorService;
 
     MockMvc mockMvc;
 
@@ -66,21 +74,72 @@ public class MateriaControllerTest {
     }
 
     @Test
-    public void testCrearMateriaBadRequest() throws Exception {
-
+    public void crearMateriaBadRequestAnio() throws Exception {
         Mockito.when(materiaService.crearMateria(any(MateriaDto.class))).thenReturn(new Materia());
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/materia")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\n" +
-                                "    \"nombre\" : \"Laboratorio II\",\n" +
-                                "    \"anio\" : \"segundo\", \n" +
-                                "    \"cuatrimestre\" : 1,\n" +
-                                "    \"profesorId\" : 2 \n"+
-                                "}")
-                        .accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"nombre\" : \"Laboratorio II\",\n" +
+                        "    \"anio\" : \"segundo\", \n" +
+                        "    \"cuatrimestre\" : 1,\n" +
+                        "    \"profesorId\" : 2 \n"+
+                        "}")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
                 .andReturn();
-
     }
 
+    @Test
+    public void crearMateriaBadRequestCuatrimestre() throws Exception {
+        Mockito.when(materiaService.crearMateria(any(MateriaDto.class))).thenReturn(new Materia());
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/materia")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"nombre\" : \"Laboratorio II\",\n" +
+                        "    \"anio\" : \"2\", \n" +
+                        "    \"cuatrimestre\" : primero,\n" +
+                        "    \"profesorId\" : 2 \n"+
+                        "}")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+    @Test
+    public void crearMateriaBadRequestProfesorId() throws Exception {
+        Mockito.when(materiaService.crearMateria(any(MateriaDto.class))).thenReturn(new Materia());
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/materia")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"nombre\" : \"Laboratorio II\",\n" +
+                        "    \"anio\" : \"2\", \n" +
+                        "    \"cuatrimestre\" : 2,\n" +
+                        "    \"profesorId\" : tres \n"+
+                        "}")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+    }
+
+
+    /*@Test
+    public void crearMateriaNotFoundProfesorId() throws Exception {
+        Mockito.when(materiaService.crearMateria(any(MateriaDto.class))).thenReturn(new Materia());
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/materia")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\n" +
+                        "    \"nombre\" : \"Laboratorio II\",\n" +
+                        "    \"anio\" : \"2\", \n" +
+                        "    \"cuatrimestre\" : \"2\",\n" +
+                        "    \"profesorId\" : \"3\",\n"+
+                        "    \"correlatividades\" : [] \n"+
+                        "}")
+                .accept(MediaType.APPLICATION_JSON)).andExpect(content().json("{\"errorMessage\": \"No se pudo encontrar un profesor con el ID: 3.\"}"))
+                .andExpect(status().isNotFound())
+                .andReturn();
+    }*/
+
+    @Test
+    public void hola(){}
 
 }

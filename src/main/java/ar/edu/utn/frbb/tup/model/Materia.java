@@ -44,8 +44,10 @@ public class Materia {
     }
 
     public void setProfesor(Profesor profesor) {
-        this.profesor = profesor;
-        profesor.setMateriasDictadas(this);
+        if (profesor != null) {
+            this.profesor = profesor;
+            profesor.setMateriasDictadas(this);
+        }
     }
 
     public void setCorrelatividades(List<Materia> correlatividades) {

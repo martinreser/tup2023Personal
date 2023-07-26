@@ -1,7 +1,8 @@
 package ar.edu.utn.frbb.tup.persistence;
 
-import ar.edu.utn.frbb.tup.model.Asignatura;
 import ar.edu.utn.frbb.tup.model.Materia;
+import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
+import ar.edu.utn.frbb.tup.persistence.exception.MateriaConNombreYaCreadoException;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,7 @@ public class MateriaDaoMemoryImpl implements MateriaDao {
     // Guarda una materia.
     @Override
     public Materia save(Materia materia, int[] correlatividades) throws MateriaNotFoundException {
-        Random random = new Random();
-        materia.setMateriaId(random.nextInt(999));
+        materia.setMateriaId(RandomNumberCreator.getInstance().generateRandomNumber(999));
         repositorioMateria.put(materia.getMateriaId(), materia);
         List<Materia> listaCorrelatividades = new ArrayList<>();
         for (Integer i : correlatividades) {
@@ -54,14 +54,22 @@ public class MateriaDaoMemoryImpl implements MateriaDao {
         return listaFiltrada;
     }
 
-    // Devuelve todas las materias, en una lista de Asignaturas.
+    // Devuelve todas las materias.
     @Override
-    public List<Asignatura> getAllMaterias() {
-        Random r = new Random();
-        List<Asignatura> listaAsignatura = new ArrayList<>();
+    public List<Materia> getAllMaterias() {
+        List<Materia> listaMaterias = new ArrayList<>();
         for (Materia m : repositorioMateria.values()){
-            listaAsignatura.add(new Asignatura(m, r.nextLong(999)));
+            listaMaterias.add(m);
         }
-        return listaAsignatura;
+        return listaMaterias;
+    }
+
+    public boolean comprobarNombreMaterias(MateriaDto materia){
+        for (Materia m: repositorioMateria.values()){
+            if (m.getNombre().equals(materia.getNombre())){
+                return false;
+            }
+        }
+        return true;
     }
 }

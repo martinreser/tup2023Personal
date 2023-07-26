@@ -2,11 +2,11 @@ package ar.edu.utn.frbb.tup.business.impl;
 
 import ar.edu.utn.frbb.tup.business.MateriaService;
 import ar.edu.utn.frbb.tup.business.ProfesorService;
-import ar.edu.utn.frbb.tup.model.Asignatura;
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.Profesor;
 import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
 import ar.edu.utn.frbb.tup.persistence.MateriaDao;
+import ar.edu.utn.frbb.tup.persistence.exception.MateriaConNombreYaCreadoException;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.ProfesorNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,10 @@ public class MateriaServiceImpl implements MateriaService {
     private ProfesorService profesorService;
 
     @Override
-    public Materia crearMateria(MateriaDto materia) throws ProfesorNotFoundException, MateriaNotFoundException {
+    public Materia crearMateria(MateriaDto materia) throws ProfesorNotFoundException, MateriaNotFoundException, MateriaConNombreYaCreadoException {
+        if (!dao.comprobarNombreMaterias(materia)){
+            throw new MateriaConNombreYaCreadoException("Ya existe una materia con el nombre: " + materia.getNombre() + ".");
+        }
         Materia m = new Materia();
         m.setNombre(materia.getNombre());
         m.setAnio(materia.getAnio());
@@ -44,7 +47,7 @@ public class MateriaServiceImpl implements MateriaService {
         return dao.findMateriaPorCadena(nombreMateria);
     }
     @Override
-    public List<Asignatura> getAllMaterias() {
+    public List<Materia> getAllMaterias() {
         return dao.getAllMaterias();
     }
 

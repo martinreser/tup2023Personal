@@ -6,6 +6,7 @@ package ar.edu.utn.frbb.tup.model;
 import ar.edu.utn.frbb.tup.model.exception.AsignaturaInexistenteException;
 import ar.edu.utn.frbb.tup.model.exception.CorrelatividadException;
 import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
+import ar.edu.utn.frbb.tup.persistence.exception.NotaNoValidaException;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -69,7 +70,7 @@ public class Alumno {
         return this.asignaturas;
     }
 
-    public void aprobarAsignatura(Materia materia, int nota) throws EstadoIncorrectoException, CorrelatividadException, AsignaturaInexistenteException {
+    public void aprobarAsignatura(Materia materia, int nota) throws EstadoIncorrectoException, CorrelatividadException, AsignaturaInexistenteException, NotaNoValidaException {
         Asignatura asignaturaAAprobar = getAsignaturaAAprobar(materia);
 
         for (Materia correlativa :
@@ -108,8 +109,10 @@ public class Alumno {
         for (Asignatura a:
              asignaturas) {
             if (a.getNombreAsignatura().equals(asignatura.getNombreAsignatura())) {
+                if (asignatura.getNota().isPresent() || asignatura.getEstado().equals(EstadoAsignatura.APROBADA)){
+                    a.setNota(asignatura.getNota().get());
+                }
                 a.setEstado(asignatura.getEstado());
-                a.setNota(asignatura.getNota().get());
             }
         }
 

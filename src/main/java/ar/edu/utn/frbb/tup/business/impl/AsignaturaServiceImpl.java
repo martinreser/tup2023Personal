@@ -3,6 +3,10 @@ package ar.edu.utn.frbb.tup.business.impl;
 import ar.edu.utn.frbb.tup.business.AsignaturaService;
 import ar.edu.utn.frbb.tup.business.MateriaService;
 import ar.edu.utn.frbb.tup.model.Asignatura;
+import ar.edu.utn.frbb.tup.model.Materia;
+import ar.edu.utn.frbb.tup.persistence.AsignaturaDao;
+import ar.edu.utn.frbb.tup.persistence.exception.AsignaturaNotFoundException;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,20 +16,25 @@ import java.util.List;
 public class AsignaturaServiceImpl implements AsignaturaService {
 
     @Autowired
+    AsignaturaDao asignaturaDao;
+
+    @Autowired
     MateriaService materiaService;
 
     @Override
-    public Asignatura getAsignatura(int materiaId, long dni) {
-        return null;
+    public Asignatura getAsignaturaPorId(long idAsignatura) throws AsignaturaNotFoundException {
+        return asignaturaDao.getAsignaturaPorId(idAsignatura);
     }
 
     @Override
-    public void actualizarAsignatura(Asignatura a) {
-
+    public void actualizarAsignatura(Asignatura a) throws AsignaturaNotFoundException {
+        asignaturaDao.update(a);
     }
 
     @Override
-    public List<Asignatura> crearListaAsignaturas() {
-        return materiaService.getAllMaterias();
+    public List<Asignatura> obtenerListaAsignaturas() {
+        List<Materia> listaMaterias = materiaService.getAllMaterias();
+        asignaturaDao.saveAsignaturas(listaMaterias);
+        return asignaturaDao.getListAsignaturas();
     }
 }
