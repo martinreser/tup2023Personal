@@ -16,13 +16,13 @@ public class MateriaDaoMemoryImpl implements MateriaDao {
     // POST
     // Guarda una materia.
     @Override
-    public Materia save(Materia materia, int[] correlatividades) throws MateriaNotFoundException {
+    public Materia save(final Materia materia, final int[] correlatividades) throws MateriaNotFoundException {
         materia.setMateriaId(RandomNumberCreator.getInstance().generateRandomNumber(999));
         repositorioMateria.put(materia.getMateriaId(), materia);
-        List<Materia> listaCorrelatividades = new ArrayList<>();
+        final List<Materia> listaCorrelatividades = new ArrayList<>();
         for (Integer i : correlatividades) {
-            Materia m = findMateriaPorId(i);
-            listaCorrelatividades.add(m);
+            Materia materia2 = findMateriaPorId(i);
+            listaCorrelatividades.add(materia2);
         }
         materia.setCorrelatividades(listaCorrelatividades);
         return materia;
@@ -31,21 +31,21 @@ public class MateriaDaoMemoryImpl implements MateriaDao {
     // GET
     // Encuentra una materia según un ID.
     @Override
-    public Materia findMateriaPorId(Integer id) throws MateriaNotFoundException {
-        Materia m = repositorioMateria.get(id);
-        if (m == null) {
+    public Materia findMateriaPorId(final Integer id) throws MateriaNotFoundException {
+        final Materia materia = repositorioMateria.get(id);
+        if (materia == null) {
             throw new MateriaNotFoundException("No se encuentra ninguna materia con el ID: " + id);
         }
-        return m;
+        return materia;
     }
 
     // Encuentra una materia según una cadena.
     @Override
-    public List<Materia> findMateriaPorCadena(String nombreMateria) throws MateriaNotFoundException {
-        List<Materia> listaFiltrada = new ArrayList<>();
-        for (Materia m : repositorioMateria.values()) {
-            if (m.getNombre().toLowerCase().startsWith(nombreMateria.toLowerCase())) {
-                listaFiltrada.add(m);
+    public List<Materia> findMateriaPorCadena(final String nombreMateria) throws MateriaNotFoundException {
+        final List<Materia> listaFiltrada = new ArrayList<>();
+        for (Materia materia : repositorioMateria.values()) {
+            if (materia.getNombre().toLowerCase().startsWith(nombreMateria.toLowerCase())) {
+                listaFiltrada.add(materia);
             }
         }
         if (listaFiltrada.isEmpty()) {
@@ -57,16 +57,16 @@ public class MateriaDaoMemoryImpl implements MateriaDao {
     // Devuelve todas las materias.
     @Override
     public List<Materia> getAllMaterias() {
-        List<Materia> listaMaterias = new ArrayList<>();
-        for (Materia m : repositorioMateria.values()){
-            listaMaterias.add(m);
+        final List<Materia> listaMaterias = new ArrayList<>();
+        for (Materia materia : repositorioMateria.values()){
+            listaMaterias.add(materia);
         }
         return listaMaterias;
     }
 
-    public boolean comprobarNombreMaterias(MateriaDto materia){
-        for (Materia m: repositorioMateria.values()){
-            if (m.getNombre().equals(materia.getNombre())){
+    public boolean comprobarNombreMaterias(final MateriaDto materia){
+        for (Materia materia1: repositorioMateria.values()){
+            if (materia1.getNombre().equals(materia.getNombre())){
                 return false;
             }
         }

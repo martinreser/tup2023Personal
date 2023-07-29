@@ -2,9 +2,10 @@ package ar.edu.utn.frbb.tup.model.dto;
 
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.Profesor;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-
+@Component
 public class MateriaDto {
     private String nombre;
     private Integer anio;

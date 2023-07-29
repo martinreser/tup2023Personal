@@ -15,40 +15,40 @@ public class AsignaturaDaoMemoryImpl implements AsignaturaDao {
 
 
     @Override
-    public void update(Asignatura a) throws AsignaturaNotFoundException {
-        Asignatura a2 = getAsignaturaPorId(a.getAsignaturaId());
-        repositorioAsignaturas.put(a2.getAsignaturaId(), a2);
+    public void update(final Asignatura asignatura) throws AsignaturaNotFoundException {
+        Asignatura asignatura2 = getAsignaturaPorId(asignatura.getAsignaturaId());
+        repositorioAsignaturas.put(asignatura2.getAsignaturaId(), asignatura2);
     }
 
     @Override
-    public Asignatura getAsignaturaPorId(long id) throws AsignaturaNotFoundException {
-        Asignatura a = repositorioAsignaturas.get(id);
-        if (a == null){
+    public Asignatura getAsignaturaPorId(final long id) throws AsignaturaNotFoundException {
+        final Asignatura asignatura = repositorioAsignaturas.get(id);
+        if (asignatura == null){
             throw new AsignaturaNotFoundException("No se encuentra ninguna asignatura con el ID: " + id);
         }
-        return a;
+        return asignatura;
     }
 
     @Override
-    public Asignatura saveAsignatura(Materia m) {
-        Asignatura a = new Asignatura(m, RandomNumberCreator.getInstance().generateRandomNumber(999));
-        repositorioAsignaturas.put(a.getAsignaturaId(), a);
-        return a;
+    public Asignatura saveAsignatura(final Materia materia) {
+        final Asignatura asignatura = new Asignatura(materia, RandomNumberCreator.getInstance().generateRandomNumber(999));
+        repositorioAsignaturas.put(asignatura.getAsignaturaId(), asignatura);
+        return asignatura;
     }
 
     @Override
-    public void saveAsignaturas(List<Materia> listaMaterias){
-        List<Asignatura> listaAsignaturas = new ArrayList<>();
-        for (Materia m : listaMaterias){
-            saveAsignatura(m);
+    public void saveAsignaturas(final List<Materia> listaMaterias){
+        final List<Asignatura> listaAsignaturas = new ArrayList<>();
+        for (Materia materia : listaMaterias){
+            saveAsignatura(materia);
         }
     }
 
     @Override
     public List<Asignatura> getListAsignaturas(){
-        List<Asignatura> listaAsignaturas = new ArrayList<>();
-        for (Asignatura a : repositorioAsignaturas.values()){
-            listaAsignaturas.add(a);
+        final List<Asignatura> listaAsignaturas = new ArrayList<>();
+        for (Asignatura asignatura : repositorioAsignaturas.values()){
+            listaAsignaturas.add(asignatura);
         }
         return listaAsignaturas;
     }

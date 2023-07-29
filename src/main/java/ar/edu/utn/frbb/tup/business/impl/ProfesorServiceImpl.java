@@ -21,50 +21,50 @@ public class ProfesorServiceImpl implements ProfesorService {
     private ProfesorDao profesorDao;
 
     @Override
-    public Profesor crearProfesor(ProfesorDto profesorDto) {
-        Profesor p = new Profesor();
-        p.setTitulo(profesorDto.getTitulo());
-        p.setApellido(profesorDto.getApellido());
-        p.setNombre(profesorDto.getNombre());
-        profesorDao.save(p);
-        return p;
+    public Profesor crearProfesor(final ProfesorDto profesorDto) {
+        final Profesor profesor = new Profesor();
+        profesor.setTitulo(profesorDto.getTitulo());
+        profesor.setApellido(profesorDto.getApellido());
+        profesor.setNombre(profesorDto.getNombre());
+        profesorDao.save(profesor);
+        return profesor;
     }
 
     @Override
-    public List<Profesor> buscarProfesorPorCadena(String apellido) throws ProfesorNotFoundException {
+    public List<Profesor> buscarProfesorPorCadena(final String apellido) throws ProfesorNotFoundException {
         return profesorDao.findProfesorByChain(apellido);
     }
 
     @Override
-    public Profesor buscarProfesorPorId(Long id) throws ProfesorNotFoundException {
+    public Profesor buscarProfesorPorId(final Long id) throws ProfesorNotFoundException {
         return profesorDao.findProfesorById(id);
     }
 
     @Override
-    public List<Materia> buscarMateriasDictadas(Long id) throws ProfesorNotFoundException {
+    public List<Materia> buscarMateriasDictadas(final Long id) throws ProfesorNotFoundException {
         return profesorDao.getMateriasDictadas(id);
     }
 
     @Override
-    public void actualizarProfesor(Profesor p) throws ProfesorNotFoundException {
-        profesorDao.update(p.getId(), p);
+    public void actualizarProfesor(final Profesor profesor) throws ProfesorNotFoundException {
+        profesorDao.update(profesor.getId(), profesor);
     }
 
     @Override
-    public Profesor actualizarProfesorPorId(Long idProfesor, ProfesorDto profesorDto) throws ProfesorNotFoundException {
-        Profesor p = profesorDao.findProfesorById(idProfesor);
-        p.setId(idProfesor);
+    public Profesor actualizarProfesorPorId(final Long idProfesor, final ProfesorDto profesorDto) throws ProfesorNotFoundException {
+        final Profesor profesor = profesorDao.findProfesorById(idProfesor);
+        profesor.setId(idProfesor);
         if (profesorDto.getNombre() != null){
-            p.setNombre(profesorDto.getNombre());
+            profesor.setNombre(profesorDto.getNombre());
         }
         if (profesorDto.getApellido() != null){
-            p.setApellido(profesorDto.getApellido());;
+            profesor.setApellido(profesorDto.getApellido());;
         }
         if (profesorDto.getTitulo() != null){
-            p.setTitulo(profesorDto.getTitulo());
+            profesor.setTitulo(profesorDto.getTitulo());
         }
-        profesorDao.update(idProfesor, p);
-        return p;
+        profesorDao.update(idProfesor, profesor);
+        return profesor;
     }
 
     @Override

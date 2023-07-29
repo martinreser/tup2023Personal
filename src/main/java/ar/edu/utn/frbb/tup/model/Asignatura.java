@@ -6,6 +6,7 @@ import ar.edu.utn.frbb.tup.persistence.exception.NotaNoValidaException;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import java.util.List;
 import java.util.Optional;
 
 @JsonIdentityInfo(
@@ -81,5 +82,9 @@ public class Asignatura {
 
     public void setAsignaturaId(Long asignaturaId) {
         this.asignaturaId = asignaturaId;
+    }
+
+    public List<Materia> getCorrelatividades(){
+        return this.materia.getCorrelatividades();
     }
 }

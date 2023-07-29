@@ -17,7 +17,7 @@ public class AlumnoDaoMemoryImpl implements AlumnoDao {
     // POST
     // Guarda el alumno.
     @Override
-    public Alumno saveAlumno(Alumno alumno) {
+    public Alumno saveAlumno(final Alumno alumno) {
         alumno.setId(RandomNumberCreator.getInstance().generateRandomNumber(999));
         return repositorioAlumnos.put(alumno.getId(), alumno);
     }
@@ -25,37 +25,37 @@ public class AlumnoDaoMemoryImpl implements AlumnoDao {
     // GET
     // Devuelve la lista de Asignaturas de un Alumno.
     @Override
-    public List<Asignatura> getAsignaturasAlumnoPorId(Long id) throws AlumnoNotFoundException {
-        Alumno a = findAlumnoById(id);
-        if (a == null){
+    public List<Asignatura> getAsignaturasAlumnoPorId(final Long id) throws AlumnoNotFoundException {
+        Alumno alumno = findAlumnoById(id);
+        if (alumno== null){
             throw new AlumnoNotFoundException("No se encuentra ningún alumno con el ID: " + id + ".");
         }
-        return a.obtenerListaAsignaturas();
+        return alumno.obtenerListaAsignaturas();
     }
 
     // Devuelve una Asignatura en específico de un Alumno.
     @Override
-    public Asignatura getAsignaturaAlumnoPorId(Long id, Long idAsignatura) throws AlumnoNotFoundException, AsignaturaNotFoundException {
-        Alumno a = findAlumnoById(id);
-        if (a == null){
+    public Asignatura getAsignaturaAlumnoPorId(final Long id, final Long idAsignatura) throws AlumnoNotFoundException, AsignaturaNotFoundException {
+        Alumno alumno = findAlumnoById(id);
+        if (alumno == null){
             throw new AlumnoNotFoundException("No se encuentra ningún alumno con el ID: " + id + ".");
         }
-        for (Asignatura asig: a.obtenerListaAsignaturas()) {
-            if (asig.getAsignaturaId().equals(idAsignatura)){
-                return asig;
+        for (Asignatura asignatura: alumno.obtenerListaAsignaturas()) {
+            if (asignatura.getAsignaturaId().equals(idAsignatura)){
+                return asignatura;
             }
         }
-        throw new AsignaturaNotFoundException("El alumno " + a.getNombre() + " " + a.getApellido() + " (ID: " + id + "), no tiene " +
+        throw new AsignaturaNotFoundException("El alumno " + alumno.getNombre() + " " + alumno.getApellido() + " (ID: " + id + "), no tiene " +
                 "ninguna asignatura con el ID: " + idAsignatura + ".");
     }
 
     // Encuentra el alumno según una cadena.
     @Override
-    public List<Alumno> findAlumnoByChain(String apellidoAlumno) throws AlumnoNotFoundException {
-        List<Alumno> listaFiltrada = new ArrayList<>();
-        for (Alumno a: repositorioAlumnos.values()) {
-            if (a.getApellido().toLowerCase().startsWith(apellidoAlumno.toLowerCase())){
-                listaFiltrada.add(a);
+    public List<Alumno> findAlumnoByChain(final String apellidoAlumno) throws AlumnoNotFoundException {
+        final List<Alumno> listaFiltrada = new ArrayList<>();
+        for (Alumno alumno: repositorioAlumnos.values()) {
+            if (alumno.getApellido().toLowerCase().startsWith(apellidoAlumno.toLowerCase())){
+                listaFiltrada.add(alumno);
             }
         }
         if (listaFiltrada.isEmpty()){
@@ -66,31 +66,31 @@ public class AlumnoDaoMemoryImpl implements AlumnoDao {
 
     // Encuentra el alumno según un ID.
     @Override
-    public Alumno findAlumnoById(Long id) throws AlumnoNotFoundException {
-        Alumno a = repositorioAlumnos.get(id);
-        if (a == null){
+    public Alumno findAlumnoById(final Long id) throws AlumnoNotFoundException {
+        Alumno alumno = repositorioAlumnos.get(id);
+        if (alumno == null){
             throw new AlumnoNotFoundException("No se encuentra ningún alumno con el ID: " + id + ".");
         }
-        return a;
+        return alumno;
     }
 
     // PUT
     // Actualiza al alumno.
     @Override
-    public void update(Long id, Alumno a) {
-        repositorioAlumnos.put(id, a);
+    public void update(final Long id, final Alumno alumno) {
+        repositorioAlumnos.put(id, alumno);
     }
 
     // DELETE
     // Borra al alumno que le pasamos por ID, y nos devuelve la lista de alumnos existentes (ya con el alumno eliminado).
     @Override
-    public List<Alumno> deleteAlumnoById(Long id) throws AlumnoNotFoundException{
-        Alumno a = repositorioAlumnos.get(id);
-        if (a == null){
+    public List<Alumno> deleteAlumnoById(final Long id) throws AlumnoNotFoundException{
+        final Alumno alumno = repositorioAlumnos.get(id);
+        if (alumno == null){
             throw new AlumnoNotFoundException("No se encuentra ningún alumno con el ID: " + id + ".");
         }
         repositorioAlumnos.remove(id);
-        List<Alumno> listaAlumnos = new ArrayList<>();
+        final List<Alumno> listaAlumnos = new ArrayList<>();
         for (Alumno a2: repositorioAlumnos.values()) {
             listaAlumnos.add(a2);
         }

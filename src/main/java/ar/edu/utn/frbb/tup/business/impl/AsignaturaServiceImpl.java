@@ -22,18 +22,18 @@ public class AsignaturaServiceImpl implements AsignaturaService {
     MateriaService materiaService;
 
     @Override
-    public Asignatura getAsignaturaPorId(long idAsignatura) throws AsignaturaNotFoundException {
+    public Asignatura getAsignaturaPorId(final long idAsignatura) throws AsignaturaNotFoundException {
         return asignaturaDao.getAsignaturaPorId(idAsignatura);
     }
 
     @Override
-    public void actualizarAsignatura(Asignatura a) throws AsignaturaNotFoundException {
+    public void actualizarAsignatura(final Asignatura a) throws AsignaturaNotFoundException {
         asignaturaDao.update(a);
     }
 
     @Override
     public List<Asignatura> obtenerListaAsignaturas() {
-        List<Materia> listaMaterias = materiaService.getAllMaterias();
+        final List<Materia> listaMaterias = materiaService.getAllMaterias();
         asignaturaDao.saveAsignaturas(listaMaterias);
         return asignaturaDao.getListAsignaturas();
     }

@@ -22,28 +22,28 @@ public class MateriaServiceImpl implements MateriaService {
     private ProfesorService profesorService;
 
     @Override
-    public Materia crearMateria(MateriaDto materia) throws ProfesorNotFoundException, MateriaNotFoundException, MateriaConNombreYaCreadoException {
-        if (!dao.comprobarNombreMaterias(materia)){
-            throw new MateriaConNombreYaCreadoException("Ya existe una materia con el nombre: " + materia.getNombre() + ".");
+    public Materia crearMateria(final MateriaDto materiadto) throws ProfesorNotFoundException, MateriaNotFoundException, MateriaConNombreYaCreadoException {
+        if (!dao.comprobarNombreMaterias(materiadto)){
+            throw new MateriaConNombreYaCreadoException("Ya existe una materia con el nombre: " + materiadto.getNombre() + ".");
         }
-        Materia m = new Materia();
-        m.setNombre(materia.getNombre());
-        m.setAnio(materia.getAnio());
-        m.setCuatrimestre(materia.getCuatrimestre());
-        Profesor p = profesorService.buscarProfesorPorId(materia.getProfesorId());
-        m.setProfesor(p);
+        Materia materia = new Materia();
+        materia.setNombre(materia.getNombre());
+        materia.setAnio(materia.getAnio());
+        materia.setCuatrimestre(materia.getCuatrimestre());
+        Profesor p = profesorService.buscarProfesorPorId(materiadto.getProfesorId());
+        materia.setProfesor(p);
         profesorService.actualizarProfesor(p);
-        dao.save(m, materia.getCorrelatividades());
-        return m;
+        dao.save(materia, materiadto.getCorrelatividades());
+        return materia;
     }
 
     @Override
-    public Materia buscarMateriaPorId(Integer id) throws MateriaNotFoundException {
+    public Materia buscarMateriaPorId(final Integer id) throws MateriaNotFoundException {
         return dao.findMateriaPorId(id);
     }
 
     @Override
-    public List<Materia> buscarMateriaPorCadena(String nombreMateria) throws MateriaNotFoundException {
+    public List<Materia> buscarMateriaPorCadena(final String nombreMateria) throws MateriaNotFoundException {
         return dao.findMateriaPorCadena(nombreMateria);
     }
     @Override

@@ -16,7 +16,7 @@ public class ProfesorDaoMemoryImpl implements ProfesorDao{
     // POST
     // Guarda el profesor.
     @Override
-    public Profesor save(Profesor profesor) {
+    public Profesor save(final Profesor profesor) {
         profesor.setId(RandomNumberCreator.getInstance().generateRandomNumber(999));
         repositorioProfesores.put(profesor.getId(),profesor);
         return profesor;
@@ -25,21 +25,21 @@ public class ProfesorDaoMemoryImpl implements ProfesorDao{
     // GET
     // Encuentra el profesor según un ID.
     @Override
-    public Profesor findProfesorById(long id) throws ProfesorNotFoundException {
-        Profesor p = repositorioProfesores.get(id);
-        if (p == null){
+    public Profesor findProfesorById(final long id) throws ProfesorNotFoundException {
+        final Profesor profesor = repositorioProfesores.get(id);
+        if (profesor == null){
             throw new ProfesorNotFoundException("No se pudo encontrar un profesor con el ID: " + id + ".");
         }
-        return p;
+        return profesor;
     }
 
     // Encuentra el profesor según una cadena.
     @Override
-    public List<Profesor> findProfesorByChain(String apellidoProfesor) throws ProfesorNotFoundException {
-        List<Profesor> listaFiltrada = new ArrayList<>();
-        for (Profesor p : repositorioProfesores.values()){
-            if (p.getApellido().toLowerCase().startsWith(apellidoProfesor.toLowerCase())){
-                listaFiltrada.add(p);
+    public List<Profesor> findProfesorByChain(final String apellidoProfesor) throws ProfesorNotFoundException {
+        final List<Profesor> listaFiltrada = new ArrayList<>();
+        for (Profesor profesor : repositorioProfesores.values()){
+            if (profesor.getApellido().toLowerCase().startsWith(apellidoProfesor.toLowerCase())){
+                listaFiltrada.add(profesor);
             }
         }
         if (listaFiltrada.isEmpty()){
@@ -50,12 +50,12 @@ public class ProfesorDaoMemoryImpl implements ProfesorDao{
 
     // Devuelve las materias que dicta un profesor específico.
     @Override
-    public List<Materia> getMateriasDictadas(Long id) throws ProfesorNotFoundException {
-        Profesor p = repositorioProfesores.get(id);
-        if (p == null){
+    public List<Materia> getMateriasDictadas(final Long id) throws ProfesorNotFoundException {
+        final Profesor profesor = repositorioProfesores.get(id);
+        if (profesor == null){
             throw new ProfesorNotFoundException("No se pudo encontrar un profesor con el ID: " + id + ".");
         }
-        List<Materia> listaMaterias = p.getMateriasDictadas();
+        List<Materia> listaMaterias = profesor.getMateriasDictadas();
         Collections.sort(listaMaterias, new Comparator<Materia>() {
             @Override
             public int compare(Materia materia1, Materia materia2) {
@@ -68,22 +68,22 @@ public class ProfesorDaoMemoryImpl implements ProfesorDao{
     // PUT
     // Actualiza al profesor.
     @Override
-    public void update(Long id, Profesor p) {
+    public void update(final Long id, final Profesor p) {
         repositorioProfesores.put(id, p);
     }
 
     // DELETE
     // Borra al profesor que le pasamos por ID, y nos devuelve la lista de profesores existentes (ya con el profesor eliminado).
     @Override
-    public List<Profesor> deleteProfesorPorId(Long id) throws ProfesorNotFoundException {
-        Profesor pr = findProfesorById(id);
-        if (pr == null){
+    public List<Profesor> deleteProfesorPorId(final Long id) throws ProfesorNotFoundException {
+        final Profesor profesor = findProfesorById(id);
+        if (profesor == null){
             throw new ProfesorNotFoundException("No se pudo encontrar un profesor con el ID: " + id + ".");
         }
         repositorioProfesores.remove(id);
         List<Profesor> listaProfesores = new ArrayList<>();
-        for (Profesor p: repositorioProfesores.values()) {
-            listaProfesores.add(p);
+        for (Profesor profesor1: repositorioProfesores.values()) {
+            listaProfesores.add(profesor1);
         }
         return listaProfesores;
     }

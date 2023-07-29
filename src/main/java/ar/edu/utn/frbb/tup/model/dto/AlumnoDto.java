@@ -1,5 +1,8 @@
 package ar.edu.utn.frbb.tup.model.dto;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class AlumnoDto {
     String nombre;
     String apellido;

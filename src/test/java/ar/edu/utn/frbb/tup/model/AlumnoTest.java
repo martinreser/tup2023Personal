@@ -1,12 +1,18 @@
 package ar.edu.utn.frbb.tup.model;
 
+import ar.edu.utn.frbb.tup.model.exception.CorrelatividadesNoAprobadasException;
 import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
+import ar.edu.utn.frbb.tup.persistence.RandomNumberCreator;
+import ar.edu.utn.frbb.tup.persistence.exception.AsignaturaNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.CambiarEstadoAsignaturaException;
 import ar.edu.utn.frbb.tup.persistence.exception.NotaNoValidaException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class AlumnoTest {
 
@@ -36,114 +42,130 @@ public class AlumnoTest {
         m4.agregarCorrelatividad(m1);
         m4.agregarCorrelatividad(m2);
         m4.agregarCorrelatividad(m3);
+        a1 = new Asignatura(m1, RandomNumberCreator.getInstance().generateRandomNumber(999));
+        a2 = new Asignatura(m2, RandomNumberCreator.getInstance().generateRandomNumber(999));
+        a3 = new Asignatura(m3, RandomNumberCreator.getInstance().generateRandomNumber(999));
+        a4 = new Asignatura(m4, RandomNumberCreator.getInstance().generateRandomNumber(999));
     }
 
     @Test
     public void testNewAlumno() {
-        alumno = new Alumno("Stefano", "D'Annunzio", 42431228);
-        assertEquals("Stefano", alumno.getNombre());
-        assertEquals("D'Annunzio", alumno.getApellido());
-        assertEquals(42431228, alumno.getDni());
-
+        alumno = new Alumno("Martin", "Reser", 45319502);
+        assertEquals("Martin", alumno.getNombre());
+        assertEquals("Reser", alumno.getApellido());
+        assertEquals(45319502, alumno.getDni());
     }
 
     @Test
-    public void testNewAlumnoConAsignaturas() {
-        alumno = new Alumno("Stefano", "D'Annunzio", 42431228);
-        alumno.agregarAsignatura(a1);
-        alumno.agregarAsignatura(a2);
-        alumno.agregarAsignatura(a3);
-        alumno.agregarAsignatura(a4);
-        assertEquals(4, alumno.obtenerListaAsignaturas().size());
-        assertEquals("Laboratorio 1", alumno.obtenerListaAsignaturas().get(0).getNombreAsignatura());
-        assertEquals("Laboratorio 2", alumno.obtenerListaAsignaturas().get(1).getNombreAsignatura());
-        assertEquals("Laboratorio 3", alumno.obtenerListaAsignaturas().get(2).getNombreAsignatura());
-        assertEquals("Laboratorio 4", alumno.obtenerListaAsignaturas().get(3).getNombreAsignatura());
-
+    public void testAlumnoSetearAtributos() {
+        alumno = new Alumno();
+        alumno.setId(1);
+        alumno.setDni(45319502);
+        alumno.setNombre("Martin");
+        alumno.setApellido("Reser");
+        alumno.setAsignaturas(new ArrayList<>());
+        assertEquals(alumno.getId(), 1);
+        assertEquals(alumno.getDni(), 45319502);
+        assertEquals(alumno.getNombre(), "Martin");
+        assertEquals(alumno.getApellido(), "Reser");
+        assertEquals(alumno.obtenerListaAsignaturas(), new ArrayList<>());
     }
 
     @Test
-    public void testNewAlumnoCursandoAsignaturas() throws CambiarEstadoAsignaturaException {
-        alumno = new Alumno("Stefano", "D'Annunzio", 42431228);
+    public void testAlumnoAgregarAsignatura() {
+        alumno = new Alumno("Martin", "Reser", 45319502);
         alumno.agregarAsignatura(a1);
-        alumno.agregarAsignatura(a2);
-        alumno.agregarAsignatura(a3);
-        alumno.agregarAsignatura(a4);
-        alumno.obtenerListaAsignaturas().get(0).cursarAsignatura();
-        alumno.obtenerListaAsignaturas().get(1).cursarAsignatura();
-        alumno.obtenerListaAsignaturas().get(2).cursarAsignatura();
-        alumno.obtenerListaAsignaturas().get(3).cursarAsignatura();
-        assertEquals(EstadoAsignatura.CURSADA, alumno.obtenerListaAsignaturas().get(0).getEstado());
-        assertEquals(EstadoAsignatura.CURSADA, alumno.obtenerListaAsignaturas().get(1).getEstado());
-        assertEquals(EstadoAsignatura.CURSADA, alumno.obtenerListaAsignaturas().get(2).getEstado());
-        assertEquals(EstadoAsignatura.CURSADA, alumno.obtenerListaAsignaturas().get(3).getEstado());
-
-
+        assertEquals(alumno.obtenerListaAsignaturas().size(), 1);
+        assertEquals(alumno.obtenerListaAsignaturas().get(0), a1);
+    }
+    @Test
+    public void testAlumnoCursarAsignaturaSinQueEsteEnSusAsignaturas() {
+        alumno = new Alumno("Martin", "Reser", 45319502);
+        assertThrows(AsignaturaNotFoundException.class, () -> {
+            alumno.cursarAsignatura(a1);
+        });
     }
 
     @Test
-    public void testNewAlumnoAprobandoAsignaturas() throws EstadoIncorrectoException, CambiarEstadoAsignaturaException, NotaNoValidaException {
-        alumno = new Alumno("Stefano", "D'Annunzio", 42431228);
+    public void testAlumnoCursarSinCorrelativasCursadas() throws CambiarEstadoAsignaturaException, AsignaturaNotFoundException {
+        alumno = new Alumno("Martin", "Reser", 45319502);
+        a1 = new Asignatura(m1,1);
+        a2 = new Asignatura(m2,2);
         alumno.agregarAsignatura(a1);
         alumno.agregarAsignatura(a2);
-        alumno.agregarAsignatura(a3);
-        alumno.agregarAsignatura(a4);
-        alumno.obtenerListaAsignaturas().get(0).cursarAsignatura();
-        alumno.obtenerListaAsignaturas().get(1).cursarAsignatura();
-        alumno.obtenerListaAsignaturas().get(2).cursarAsignatura();
-        alumno.obtenerListaAsignaturas().get(3).cursarAsignatura();
-        if(alumno.puedeAprobar(alumno.obtenerListaAsignaturas().get(1))) {
-            alumno.obtenerListaAsignaturas().get(1).aprobarAsignatura(8);
-        }
-        if(alumno.puedeAprobar(alumno.obtenerListaAsignaturas().get(2))) {
-            alumno.obtenerListaAsignaturas().get(2).aprobarAsignatura(8);
-        }
-        if(alumno.puedeAprobar(alumno.obtenerListaAsignaturas().get(3))) {
-            alumno.obtenerListaAsignaturas().get(3).aprobarAsignatura(8);
-        }
-        //assertEquals(EstadoAsignatura.APROBADA, alumno.obtenerListaAsignaturas().get(0).getEstado());
-        assertEquals(EstadoAsignatura.APROBADA, alumno.obtenerListaAsignaturas().get(1).getEstado());
-        assertEquals(EstadoAsignatura.APROBADA, alumno.obtenerListaAsignaturas().get(2).getEstado());
-        assertEquals(EstadoAsignatura.APROBADA, alumno.obtenerListaAsignaturas().get(3).getEstado());
+        assertThrows(CorrelatividadesNoAprobadasException.class, () -> {
+            alumno.cursarAsignatura(a2);
+        });
     }
 
-//    @Test(expected = CorrelatividadesNoAprobadasException.class)
-//    public void testAlumnoAprobandoSinCumplirCorrelativas() throws CorrelatividadesNoAprobadasException {
-//        alumno = new Alumno("Stefano", "D'Annunzio", 42431228);
-//        alumno.agregarAsignatura(a1);
-//        alumno.agregarAsignatura(a2);
-//        alumno.agregarAsignatura(a3);
-//        alumno.agregarAsignatura(a4);
-//
-//        Materia m5 = new Materia("Programacion 3", 2, 1, profesor1);
-//        m5.agregarCorrelatividad(m1);
-//        m5.agregarCorrelatividad(m2);
-//        m4.agregarCorrelatividad(m5);
-//        Asignatura a5 = new Asignatura(m5);
-//        alumno.agregarAsignatura(a5);
-//
-//        alumno.obtenerListaAsignaturas().get(0).cursarAsignatura();
-//        alumno.obtenerListaAsignaturas().get(1).cursarAsignatura();
-//        alumno.obtenerListaAsignaturas().get(2).cursarAsignatura();
-//        alumno.obtenerListaAsignaturas().get(3).cursarAsignatura();
-//        alumno.obtenerListaAsignaturas().get(4).cursarAsignatura();
-//        try {
-//            if(alumno.puedeAprobar(alumno.obtenerListaAsignaturas().get(0))) {
-//                alumno.obtenerListaAsignaturas().get(0).aprobarAsignatura(8);
-//            }
-//            if(alumno.puedeAprobar(alumno.obtenerListaAsignaturas().get(1))) {
-//                alumno.obtenerListaAsignaturas().get(1).aprobarAsignatura(8);
-//            }
-//            if(alumno.puedeAprobar(alumno.obtenerListaAsignaturas().get(2))) {
-//                alumno.obtenerListaAsignaturas().get(2).aprobarAsignatura(8);
-//            }
-//            if(alumno.puedeAprobar(alumno.obtenerListaAsignaturas().get(3))) {
-//                alumno.obtenerListaAsignaturas().get(3).aprobarAsignatura(8);
-//            }
-//        }
-//         catch (EstadoIncorrectoException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//    }
+    @Test
+    public void testAlumnoCursarSinCorrelativasAprobadas() throws CambiarEstadoAsignaturaException, AsignaturaNotFoundException, CorrelatividadesNoAprobadasException {
+        alumno = new Alumno("Martin", "Reser", 45319502);
+        a1 = new Asignatura(m1,1);
+        a2 = new Asignatura(m2,2);
+        alumno.agregarAsignatura(a1);
+        alumno.agregarAsignatura(a2);
+        alumno.cursarAsignatura(a1);
+        assertThrows(CorrelatividadesNoAprobadasException.class, () -> {
+            alumno.cursarAsignatura(a2);
+        });
+    }
+
+    @Test
+    public void testAlumnoAprobarAsignaturaSinQueEsteEnSusAsignaturas() {
+        alumno = new Alumno("Martin", "Reser", 45319502);
+        a1 = new Asignatura(m1,1);
+        assertThrows(AsignaturaNotFoundException.class, () -> {
+            alumno.aprobarAsignatura(a1, 10);
+        });
+    }
+
+    @Test
+    public void testAlumnoAprobarAsignaturaSinCursarla() {
+        alumno = new Alumno("Martin", "Reser", 45319502);
+        a1 = new Asignatura(m1,1);
+        alumno.agregarAsignatura(a1);
+        assertThrows(EstadoIncorrectoException.class, () -> {
+            alumno.aprobarAsignatura(a1, 10);
+        });
+    }
+
+    @Test
+    public void testAlumnoAprobarSinCorrelativasAprobadas() throws CambiarEstadoAsignaturaException, AsignaturaNotFoundException, CorrelatividadesNoAprobadasException {
+        alumno = new Alumno("Martin", "Reser", 45319502);
+        a1 = new Asignatura(m1,1);
+        a2 = new Asignatura(m2,2);
+        alumno.agregarAsignatura(a1);
+        alumno.agregarAsignatura(a2);
+        alumno.cursarAsignatura(a1);
+        assertThrows(CorrelatividadesNoAprobadasException.class, () -> {
+            alumno.aprobarAsignatura(a2, 10);
+        });
+    }
+
+    @Test
+    public void testAlumnoAprobarSinCorrelativasCursadas() {
+        alumno = new Alumno("Martin", "Reser", 45319502);
+        a1 = new Asignatura(m1,1);
+        a2 = new Asignatura(m2,2);
+        alumno.agregarAsignatura(a1);
+        alumno.agregarAsignatura(a2);
+        assertThrows(CorrelatividadesNoAprobadasException.class, () -> {
+            alumno.aprobarAsignatura(a2, 10);
+        });
+    }
+
+    @Test
+    public void testAlumnoCursarAsignatura() throws CambiarEstadoAsignaturaException, AsignaturaNotFoundException, CorrelatividadesNoAprobadasException, EstadoIncorrectoException, NotaNoValidaException {
+        alumno = new Alumno("Martin", "Reser", 45319502);
+        a1 = new Asignatura(m1,1);
+        a2 = new Asignatura(m2,2);
+        alumno.agregarAsignatura(a1);
+        alumno.agregarAsignatura(a2);
+        alumno.cursarAsignatura(a1);
+        alumno.aprobarAsignatura(a1,10);
+        alumno.cursarAsignatura(a2);
+        assertEquals(a1.getEstado(), EstadoAsignatura.APROBADA);
+        assertEquals(a2.getEstado(), EstadoAsignatura.CURSADA);
+    }
 }
