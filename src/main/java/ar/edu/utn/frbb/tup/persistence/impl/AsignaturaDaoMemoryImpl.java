@@ -1,7 +1,9 @@
-package ar.edu.utn.frbb.tup.persistence;
+package ar.edu.utn.frbb.tup.persistence.impl;
 
 import ar.edu.utn.frbb.tup.model.Asignatura;
 import ar.edu.utn.frbb.tup.model.Materia;
+import ar.edu.utn.frbb.tup.persistence.AsignaturaDao;
+import ar.edu.utn.frbb.tup.persistence.RandomNumberCreator;
 import ar.edu.utn.frbb.tup.persistence.exception.AsignaturaNotFoundException;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.springframework.stereotype.Service;

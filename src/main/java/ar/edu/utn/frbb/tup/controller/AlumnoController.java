@@ -1,6 +1,7 @@
 package ar.edu.utn.frbb.tup.controller;
 
 import ar.edu.utn.frbb.tup.business.AlumnoService;
+import ar.edu.utn.frbb.tup.business.DatoInvalidoException;
 import ar.edu.utn.frbb.tup.model.Alumno;
 import ar.edu.utn.frbb.tup.model.Asignatura;
 import ar.edu.utn.frbb.tup.model.dto.AlumnoDto;
@@ -23,14 +24,14 @@ public class AlumnoController {
     // MÉTODOS POST
     // Crear alumno según body (DTO).
     @PostMapping("/")
-    public Alumno crearAlumno(@RequestBody AlumnoDto alumnoDto) {
+    public Alumno crearAlumno(@RequestBody AlumnoDto alumnoDto) throws DatoInvalidoException {
         return alumnoService.crearAlumno(alumnoDto);
     }
 
     // MÉTODOS GET
     // Buscar asignaturas de un alumno por ID.
     @GetMapping("/{idAlumno}/asignaturas")
-    public List<Asignatura> obtenerAsignaturasAlumnoPorId(@PathVariable("idAlumno") Long id) throws AlumnoNotFoundException {
+    public List<Asignatura> obtenerAsignaturasAlumnoPorId(@PathVariable("idAlumno") Long id) throws AlumnoNotFoundException, AsignaturaNotFoundException {
         return alumnoService.obtenerAsignaturasAlumnoPorId(id);
     }
 
@@ -74,7 +75,7 @@ public class AlumnoController {
     // MÉTODOS DELETE
     // Borrar alumno según ID.
     @DeleteMapping("/{idAlumno}")
-    public List<Alumno> borrarAlumnoPorId(@PathVariable("idAlumno") Long id) throws AlumnoNotFoundException {
+    public List<Alumno> borrarAlumnoPorId(@PathVariable("idAlumno") Long id) throws AlumnoNotFoundException, AlumnoEliminadoCorrectamente {
         return alumnoService.borrarAlumnoPorId(id);
     }
 }

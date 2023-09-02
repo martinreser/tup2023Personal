@@ -26,6 +26,10 @@ public class Asignatura {
         this.estado = EstadoAsignatura.NO_CURSADA;
     }
 
+    public void setMateria(Materia materia) {
+        this.materia = materia;
+    }
+
     public Optional<Integer> getNota() {
         return Optional.ofNullable(nota);
     }
@@ -61,6 +65,7 @@ public class Asignatura {
     }
 
     public void aprobarAsignatura(int nota) throws EstadoIncorrectoException, NotaNoValidaException {
+        comprobarNota(nota);
         if (this.estado.equals(EstadoAsignatura.APROBADA)){
             throw new EstadoIncorrectoException("La asignatura " + materia.getNombre() + " ya está aprobada [NOTA: " + this.nota + "].");
         }
@@ -87,4 +92,15 @@ public class Asignatura {
     public List<Materia> getCorrelatividades(){
         return this.materia.getCorrelatividades();
     }
+
+    private boolean comprobarNota(final int nota) throws NotaNoValidaException {
+        if (nota == 0){
+            throw new NotaNoValidaException("La nota no puede ser nula.");
+        }
+        if (nota > 10 || nota < 0){
+            throw new NotaNoValidaException("La nota debe ser mayor a 0 y menor a 10.");
+        }
+        return true;
+    }
+
 }

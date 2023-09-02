@@ -1,9 +1,11 @@
-package ar.edu.utn.frbb.tup.persistence;
+package ar.edu.utn.frbb.tup.persistence.impl;
 
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
-import ar.edu.utn.frbb.tup.persistence.exception.MateriaConNombreYaCreadoException;
+import ar.edu.utn.frbb.tup.persistence.MateriaDao;
+import ar.edu.utn.frbb.tup.persistence.RandomNumberCreator;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
+import ar.edu.utn.frbb.tup.persistence.exception.YaExistenteException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,12 +18,13 @@ public class MateriaDaoMemoryImpl implements MateriaDao {
     // POST
     // Guarda una materia.
     @Override
-    public Materia save(final Materia materia, final int[] correlatividades) throws MateriaNotFoundException {
+    public Materia save(final Materia materia, final int[] correlatividades) throws MateriaNotFoundException, YaExistenteException {
+        comprobarNombreMaterias(materia);
         materia.setMateriaId(RandomNumberCreator.getInstance().generateRandomNumber(999));
         repositorioMateria.put(materia.getMateriaId(), materia);
         final List<Materia> listaCorrelatividades = new ArrayList<>();
         for (Integer i : correlatividades) {
-            Materia materia2 = findMateriaPorId(i);
+            Materia materia2 = findMateriaById(i);
             listaCorrelatividades.add(materia2);
         }
         materia.setCorrelatividades(listaCorrelatividades);
@@ -31,7 +34,7 @@ public class MateriaDaoMemoryImpl implements MateriaDao {
     // GET
     // Encuentra una materia según un ID.
     @Override
-    public Materia findMateriaPorId(final Integer id) throws MateriaNotFoundException {
+    public Materia findMateriaById(final Integer id) throws MateriaNotFoundException {
         final Materia materia = repositorioMateria.get(id);
         if (materia == null) {
             throw new MateriaNotFoundException("No se encuentra ninguna materia con el ID: " + id);
@@ -41,7 +44,7 @@ public class MateriaDaoMemoryImpl implements MateriaDao {
 
     // Encuentra una materia según una cadena.
     @Override
-    public List<Materia> findMateriaPorCadena(final String nombreMateria) throws MateriaNotFoundException {
+    public List<Materia> findMateriaByCadena(final String nombreMateria) throws MateriaNotFoundException {
         final List<Materia> listaFiltrada = new ArrayList<>();
         for (Materia materia : repositorioMateria.values()) {
             if (materia.getNombre().toLowerCase().startsWith(nombreMateria.toLowerCase())) {
@@ -64,10 +67,15 @@ public class MateriaDaoMemoryImpl implements MateriaDao {
         return listaMaterias;
     }
 
-    public boolean comprobarNombreMaterias(final MateriaDto materia){
+    @Override
+    public void deleteMateriaById(final int materiaId) {
+        repositorioMateria.remove(materiaId);
+    }
+
+    private boolean comprobarNombreMaterias(final Materia materia) throws YaExistenteException {
         for (Materia materia1: repositorioMateria.values()){
             if (materia1.getNombre().equals(materia.getNombre())){
-                return false;
+                throw new YaExistenteException("Ya existe una materia con el nombre " + materia.getNombre());
             }
         }
         return true;

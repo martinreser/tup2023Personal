@@ -2,11 +2,13 @@ package ar.edu.utn.frbb.tup.business.impl;
 
 import ar.edu.utn.frbb.tup.business.AlumnoService;
 import ar.edu.utn.frbb.tup.business.AsignaturaService;
+import ar.edu.utn.frbb.tup.business.DatoInvalidoException;
 import ar.edu.utn.frbb.tup.model.Alumno;
 import ar.edu.utn.frbb.tup.model.Asignatura;
 import ar.edu.utn.frbb.tup.model.EstadoAsignatura;
 import ar.edu.utn.frbb.tup.model.dto.AlumnoDto;
 import ar.edu.utn.frbb.tup.model.dto.AsignaturaDto;
+import ar.edu.utn.frbb.tup.model.dto.ProfesorDto;
 import ar.edu.utn.frbb.tup.model.exception.CorrelatividadesNoAprobadasException;
 import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
 import ar.edu.utn.frbb.tup.persistence.AlumnoDao;
@@ -26,7 +28,10 @@ public class AlumnoServiceImpl implements AlumnoService {
     private AsignaturaService asignaturaService;
 
     @Override
-    public Alumno crearAlumno(final AlumnoDto alumno) {
+    public Alumno crearAlumno(final AlumnoDto alumno) throws DatoInvalidoException {
+        comprobarNombre(alumno);
+        comprobarApellido(alumno);
+        comprobarDni(alumno);
         final Alumno a = new Alumno();
         a.setNombre(alumno.getNombre());
         a.setApellido(alumno.getApellido());
@@ -48,7 +53,7 @@ public class AlumnoServiceImpl implements AlumnoService {
     }
 
     @Override
-    public List<Asignatura> obtenerAsignaturasAlumnoPorId(final Long id) throws AlumnoNotFoundException {
+    public List<Asignatura> obtenerAsignaturasAlumnoPorId(final Long id) throws AlumnoNotFoundException, AsignaturaNotFoundException {
         return alumnoDao.getAsignaturasAlumnoPorId(id);
     }
 
@@ -59,19 +64,23 @@ public class AlumnoServiceImpl implements AlumnoService {
 
     @Override
     public Alumno actualizarAlumnoPorId(final Long idAlumno, final AlumnoDto alumnoDto) throws AlumnoNotFoundException {
-        final Alumno a = alumnoDao.findAlumnoById(idAlumno);
-        a.setId(idAlumno);
-        if (alumnoDto.getNombre() != null){
-            a.setNombre(alumnoDto.getNombre());
+        final Alumno alumno = alumnoDao.findAlumnoById(idAlumno);
+        alumno.setId(idAlumno);
+        if (alumnoDto.getNombre() != null &&
+                !alumnoDto.getNombre().equals("") && !alumnoDto.getNombre().matches(".*\\d+.*")){
+            alumno.setNombre(alumnoDto.getNombre());
         }
-        if (alumnoDto.getApellido() != null){
-            a.setApellido(alumnoDto.getApellido());;
+        if (alumnoDto.getApellido() != null &&
+                !alumnoDto.getApellido().equals("") && !alumnoDto.getApellido().matches(".*\\d+.*")){
+            alumno.setApellido(alumnoDto.getApellido());;
         }
-        if (alumnoDto.getDni() != 0){
-            a.setDni(alumnoDto.getDni());
+        String numeroComoCadena = Long.toString(alumnoDto.getDni());
+        int cantidadDeDigitos = numeroComoCadena.length();
+        if (cantidadDeDigitos == 7 || cantidadDeDigitos == 8){
+            alumno.setDni(alumnoDto.getDni());
         }
-        alumnoDao.update(idAlumno, a);
-        return a;
+        alumnoDao.update(idAlumno, alumno);
+        return alumno;
     }
 
     @Override
@@ -80,7 +89,6 @@ public class AlumnoServiceImpl implements AlumnoService {
         final Alumno alumno = alumnoDao.findAlumnoById(idAlumno);
         final Asignatura asignatura = asignaturaService.getAsignaturaPorId(idAsignatura);
         if (asignaturaDto.getCondicion().equals(EstadoAsignatura.APROBADA)){
-            comprobarNota(asignaturaDto.getNota());
             alumno.aprobarAsignatura(asignatura, asignaturaDto.getNota());
         }
         else if (asignaturaDto.getCondicion().equals(EstadoAsignatura.CURSADA)){
@@ -96,16 +104,33 @@ public class AlumnoServiceImpl implements AlumnoService {
     }
 
     @Override
-    public List<Alumno> borrarAlumnoPorId(final Long id) throws AlumnoNotFoundException {
+    public List<Alumno> borrarAlumnoPorId(final Long id) throws AlumnoNotFoundException, AlumnoEliminadoCorrectamente {
         return alumnoDao.deleteAlumnoById(id);
     }
 
-    private boolean comprobarNota(final int nota) throws NotaNoValidaException {
-        if (nota == 0){
-            throw new NotaNoValidaException("La nota no puede ser nula.");
+    private boolean comprobarNombre(final AlumnoDto alumnoDto) throws DatoInvalidoException {
+        if (null == alumnoDto.getNombre() || alumnoDto.getNombre().equals("")){
+            throw new DatoInvalidoException("El nombre no puede ser nulo ni estar vacío.");
         }
-        if (nota > 10 || nota < 0){
-            throw new NotaNoValidaException("La nota debe ser mayor a 0 y menor a 10.");
+        if (alumnoDto.getNombre().matches(".*\\d+.*")){
+            throw new DatoInvalidoException("El nombre no puede contener números.");
+        }
+        return true;
+    }
+    private boolean comprobarApellido(final AlumnoDto alumnoDto) throws DatoInvalidoException {
+        if (null == alumnoDto.getApellido() || alumnoDto.getApellido().equals("")){
+            throw new DatoInvalidoException("El apellido no puede ser nulo ni estar vacío.");
+        }
+        if (alumnoDto.getApellido().matches(".*\\d+.*")){
+            throw new DatoInvalidoException("El apellido no puede contener números.");
+        }
+        return true;
+    }
+    private boolean comprobarDni(final AlumnoDto alumnoDto) throws DatoInvalidoException {
+        String numeroComoCadena = Long.toString(alumnoDto.getDni());
+        int cantidadDeDigitos = numeroComoCadena.length();
+        if (cantidadDeDigitos > 8 || cantidadDeDigitos < 7){
+            throw new DatoInvalidoException("El dni debe tener entre 7 y 8 dígitos.");
         }
         return true;
     }

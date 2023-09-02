@@ -1,9 +1,13 @@
-package ar.edu.utn.frbb.tup.persistence;
+package ar.edu.utn.frbb.tup.persistence.impl;
 
 import ar.edu.utn.frbb.tup.model.Alumno;
 import ar.edu.utn.frbb.tup.model.Asignatura;
+import ar.edu.utn.frbb.tup.persistence.AlumnoDao;
+import ar.edu.utn.frbb.tup.persistence.RandomNumberCreator;
+import ar.edu.utn.frbb.tup.persistence.exception.AlumnoEliminadoCorrectamente;
 import ar.edu.utn.frbb.tup.persistence.exception.AlumnoNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.AsignaturaNotFoundException;
+import ar.edu.utn.frbb.tup.persistence.exception.ProfesorEliminadoCorrectamente;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -25,12 +29,17 @@ public class AlumnoDaoMemoryImpl implements AlumnoDao {
     // GET
     // Devuelve la lista de Asignaturas de un Alumno.
     @Override
-    public List<Asignatura> getAsignaturasAlumnoPorId(final Long id) throws AlumnoNotFoundException {
+    public List<Asignatura> getAsignaturasAlumnoPorId(final Long id) throws AlumnoNotFoundException, AsignaturaNotFoundException {
         Alumno alumno = findAlumnoById(id);
         if (alumno== null){
             throw new AlumnoNotFoundException("No se encuentra ningún alumno con el ID: " + id + ".");
         }
-        return alumno.obtenerListaAsignaturas();
+        List<Asignatura> asignaturas = alumno.obtenerListaAsignaturas();
+        if (asignaturas.isEmpty()){
+            throw new AsignaturaNotFoundException("La lista de asignaturas del alumno " + alumno.getNombre() +
+                    alumno.getApellido() + " está vacía.");
+        }
+        return asignaturas;
     }
 
     // Devuelve una Asignatura en específico de un Alumno.
@@ -78,13 +87,14 @@ public class AlumnoDaoMemoryImpl implements AlumnoDao {
     // Actualiza al alumno.
     @Override
     public void update(final Long id, final Alumno alumno) {
+
         repositorioAlumnos.put(id, alumno);
     }
 
     // DELETE
     // Borra al alumno que le pasamos por ID, y nos devuelve la lista de alumnos existentes (ya con el alumno eliminado).
     @Override
-    public List<Alumno> deleteAlumnoById(final Long id) throws AlumnoNotFoundException{
+    public List<Alumno> deleteAlumnoById(final Long id) throws AlumnoNotFoundException, AlumnoEliminadoCorrectamente {
         final Alumno alumno = repositorioAlumnos.get(id);
         if (alumno == null){
             throw new AlumnoNotFoundException("No se encuentra ningún alumno con el ID: " + id + ".");
@@ -94,6 +104,12 @@ public class AlumnoDaoMemoryImpl implements AlumnoDao {
         for (Alumno a2: repositorioAlumnos.values()) {
             listaAlumnos.add(a2);
         }
+        if (listaAlumnos.isEmpty()){
+            throw new AlumnoEliminadoCorrectamente("El alumno " + alumno.getNombre() + " " + alumno.getApellido() +
+                    " [ID: " + alumno.getId() + "], fue eliminado correctamente.\nYa no quedan alumnos disponibles.");
+        }
         return listaAlumnos;
     }
+
+
 }

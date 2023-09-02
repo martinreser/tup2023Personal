@@ -11,15 +11,15 @@ import ar.edu.utn.frbb.tup.persistence.exception.*;
 import java.util.List;
 
 public interface AlumnoService {
-    Alumno crearAlumno(AlumnoDto alumno);
+    Alumno crearAlumno(AlumnoDto alumno) throws DatoInvalidoException;
 
     List<Alumno> buscarAlumnoPorCadena(String apellidoAlumno) throws AlumnoNotFoundException;
     Alumno buscarAlumnoPorId(Long id) throws AlumnoNotFoundException;
-    List<Asignatura> obtenerAsignaturasAlumnoPorId(Long id) throws AlumnoNotFoundException;
+    List<Asignatura> obtenerAsignaturasAlumnoPorId(Long id) throws AlumnoNotFoundException, AsignaturaNotFoundException;
     Asignatura obtenerAsignaturaAlumnoPorId(Long id, Long idAsignatura) throws AlumnoNotFoundException, AsignaturaNotFoundException;
     Alumno actualizarAlumnoPorId(Long idAlumno, AlumnoDto alumnoDto) throws AlumnoNotFoundException;
     Asignatura actualizarEstadoAsignaturaPorID(Long idAlumno, Long idAsignatura, AsignaturaDto asignaturaDto) throws EstadoIncorrectoException, CorrelatividadesNoAprobadasException, AlumnoNotFoundException,
             AsignaturaNotFoundException, NotaNoValidaException, CambiarEstadoAsignaturaException;
-    List<Alumno> borrarAlumnoPorId(Long id) throws AlumnoNotFoundException;
+    List<Alumno> borrarAlumnoPorId(Long id) throws AlumnoNotFoundException, AlumnoEliminadoCorrectamente;
 
 }

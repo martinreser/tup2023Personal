@@ -1,15 +1,16 @@
 package ar.edu.utn.frbb.tup.business.impl;
 
+import ar.edu.utn.frbb.tup.business.DatoInvalidoException;
 import ar.edu.utn.frbb.tup.business.ProfesorService;
-import ar.edu.utn.frbb.tup.model.Alumno;
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.Profesor;
 import ar.edu.utn.frbb.tup.model.dto.ProfesorDto;
 import ar.edu.utn.frbb.tup.persistence.MateriaDao;
-import ar.edu.utn.frbb.tup.persistence.MateriaDaoMemoryImpl;
 import ar.edu.utn.frbb.tup.persistence.ProfesorDao;
-import ar.edu.utn.frbb.tup.persistence.ProfesorDaoMemoryImpl;
+import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
+import ar.edu.utn.frbb.tup.persistence.exception.ProfesorEliminadoCorrectamente;
 import ar.edu.utn.frbb.tup.persistence.exception.ProfesorNotFoundException;
+import ar.edu.utn.frbb.tup.persistence.exception.YaExistenteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +21,14 @@ public class ProfesorServiceImpl implements ProfesorService {
     @Autowired
     private ProfesorDao profesorDao;
 
+    @Autowired
+    private MateriaDao materiaDao;
+
     @Override
-    public Profesor crearProfesor(final ProfesorDto profesorDto) {
+    public Profesor crearProfesor(final ProfesorDto profesorDto) throws DatoInvalidoException, YaExistenteException {
+        comprobarNombre(profesorDto);
+        comprobarApellido(profesorDto);
+        comprobarTitulo(profesorDto);
         final Profesor profesor = new Profesor();
         profesor.setTitulo(profesorDto.getTitulo());
         profesor.setApellido(profesorDto.getApellido());
@@ -51,16 +58,19 @@ public class ProfesorServiceImpl implements ProfesorService {
     }
 
     @Override
-    public Profesor actualizarProfesorPorId(final Long idProfesor, final ProfesorDto profesorDto) throws ProfesorNotFoundException {
+    public Profesor actualizarProfesorPorId(final Long idProfesor, final ProfesorDto profesorDto) throws ProfesorNotFoundException, DatoInvalidoException {
         final Profesor profesor = profesorDao.findProfesorById(idProfesor);
         profesor.setId(idProfesor);
-        if (profesorDto.getNombre() != null){
+        if (profesorDto.getNombre() != null &&
+                !profesorDto.getNombre().equals("") && !profesorDto.getNombre().matches(".*\\d+.*")){
             profesor.setNombre(profesorDto.getNombre());
         }
-        if (profesorDto.getApellido() != null){
+        if (profesorDto.getApellido() != null &&
+                !profesorDto.getApellido().equals("") && !profesorDto.getApellido().matches(".*\\d+.*")){
             profesor.setApellido(profesorDto.getApellido());;
         }
-        if (profesorDto.getTitulo() != null){
+        if (profesorDto.getApellido() != null &&
+                !profesorDto.getApellido().equals("") && !profesorDto.getApellido().matches(".*\\d+.*")){
             profesor.setTitulo(profesorDto.getTitulo());
         }
         profesorDao.update(idProfesor, profesor);
@@ -68,8 +78,39 @@ public class ProfesorServiceImpl implements ProfesorService {
     }
 
     @Override
-    public List<Profesor> borrarProfesorPorId(Long id) throws ProfesorNotFoundException {
-        return profesorDao.deleteProfesorPorId(id);
+    public List<Profesor> borrarProfesorPorId(Long id) throws ProfesorNotFoundException, ProfesorEliminadoCorrectamente {
+        for (Materia materia: profesorDao.getMateriasDictadas(id)) {
+            materiaDao.deleteMateriaById(materia.getMateriaId());
+        }
+        return profesorDao.deleteProfesorById(id);
     }
 
+    private boolean comprobarNombre(final ProfesorDto profesorDto) throws DatoInvalidoException {
+        if (null == profesorDto.getNombre() || profesorDto.getNombre().equals("")){
+            throw new DatoInvalidoException("El nombre no puede ser nulo ni estar vacío.");
+        }
+        if (profesorDto.getNombre().matches(".*\\d+.*")){
+            throw new DatoInvalidoException("El nombre no puede contener números.");
+        }
+        return true;
+    }
+    private boolean comprobarApellido(final ProfesorDto profesorDto) throws DatoInvalidoException {
+        if (null == profesorDto.getApellido() || profesorDto.getApellido().equals("")){
+            throw new DatoInvalidoException("El apellido no puede ser nulo ni estar vacío.");
+        }
+        if (profesorDto.getApellido().matches(".*\\d+.*")){
+            throw new DatoInvalidoException("El apellido no puede contener números.");
+        }
+        return true;
+    }
+    private boolean comprobarTitulo(final ProfesorDto profesorDto) throws DatoInvalidoException {
+        if (null == profesorDto.getTitulo() || profesorDto.getTitulo().equals("")){
+            throw new DatoInvalidoException("El título no puede ser nulo ni estar vacío.");
+        }
+        if (profesorDto.getTitulo().matches(".*\\d+.*")){
+            throw new DatoInvalidoException("El título no puede contener números decimales, recuerde anotarlo con" +
+                    " números romanos. Ejemplo: 4 --> IV");
+        }
+        return true;
+    }
 }

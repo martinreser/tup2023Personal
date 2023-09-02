@@ -1,18 +1,17 @@
 package ar.edu.utn.frbb.tup.controller;
 
+import ar.edu.utn.frbb.tup.business.DatoInvalidoException;
 import ar.edu.utn.frbb.tup.business.ProfesorService;
-import ar.edu.utn.frbb.tup.model.Alumno;
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.Profesor;
-import ar.edu.utn.frbb.tup.model.dto.AlumnoDto;
-import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
 import ar.edu.utn.frbb.tup.model.dto.ProfesorDto;
-import ar.edu.utn.frbb.tup.persistence.exception.AlumnoNotFoundException;
+import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
+import ar.edu.utn.frbb.tup.persistence.exception.ProfesorEliminadoCorrectamente;
 import ar.edu.utn.frbb.tup.persistence.exception.ProfesorNotFoundException;
+import ar.edu.utn.frbb.tup.persistence.exception.YaExistenteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -25,7 +24,7 @@ public class ProfesorController {
     // MÉTODOS POST
     // Crear profesor según body (DTO).
     @PostMapping
-    public Profesor crearProfesor(@RequestBody ProfesorDto profesorDto){
+    public Profesor crearProfesor(@RequestBody ProfesorDto profesorDto) throws DatoInvalidoException, YaExistenteException {
         return profesorService.crearProfesor(profesorDto);
     }
 
@@ -52,14 +51,14 @@ public class ProfesorController {
     // Actualizar profesor según body (DTO).
     @PutMapping("/{idProfesor}")
     public Profesor actualizarProfesorPorId(@PathVariable("idProfesor") Long idProfesor,
-                                          @RequestBody ProfesorDto profesorDto) throws ProfesorNotFoundException {
+                                          @RequestBody ProfesorDto profesorDto) throws ProfesorNotFoundException, DatoInvalidoException {
         return profesorService.actualizarProfesorPorId(idProfesor, profesorDto);
     }
 
     // MÉTODOS DELETE
     // Borrar profesor según ID.
     @DeleteMapping("/{idProfesor}")
-    public List<Profesor> borrarProfesorPorId(@PathVariable("idProfesor") Long id) throws ProfesorNotFoundException {
+    public List<Profesor> borrarProfesorPorId(@PathVariable("idProfesor") Long id) throws ProfesorNotFoundException, ProfesorEliminadoCorrectamente {
         return profesorService.borrarProfesorPorId(id);
     }
 }

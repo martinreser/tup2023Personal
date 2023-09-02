@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.controller.handler;
 
+import ar.edu.utn.frbb.tup.business.DatoInvalidoException;
 import ar.edu.utn.frbb.tup.model.exception.CorrelatividadesNoAprobadasException;
 import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
 import ar.edu.utn.frbb.tup.persistence.exception.*;
@@ -29,8 +30,9 @@ public class UtnResponseEntityExceptionHandler extends ResponseEntityExceptionHa
     }
 
     @ExceptionHandler(value
-            = {CorrelatividadesNoAprobadasException.class, MateriaConNombreYaCreadoException.class, EstadoIncorrectoException.class,
-            CambiarEstadoAsignaturaException.class, NotaNoValidaException.class})
+            = {CorrelatividadesNoAprobadasException.class, EstadoIncorrectoException.class,
+            CambiarEstadoAsignaturaException.class, NotaNoValidaException.class, DatoInvalidoException.class,
+            YaExistenteException.class})
     protected ResponseEntity<Object> notApproved(
             Exception ex, WebRequest request) {
         String exceptionMessage = ex.getMessage();
@@ -38,6 +40,17 @@ public class UtnResponseEntityExceptionHandler extends ResponseEntityExceptionHa
         error.setErrorMessage(exceptionMessage);
         return handleExceptionInternal(ex, error,
                 new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value
+            = {ProfesorEliminadoCorrectamente.class, AlumnoEliminadoCorrectamente.class})
+    protected ResponseEntity<Object> todosEliminados(
+            Exception ex, WebRequest request) {
+        String exceptionMessage = ex.getMessage();
+        CustomApiError error = new CustomApiError();
+        error.setErrorMessage(exceptionMessage);
+        return handleExceptionInternal(ex, error,
+                new HttpHeaders(), HttpStatus.OK, request);
     }
 
 //    @ExceptionHandler(value

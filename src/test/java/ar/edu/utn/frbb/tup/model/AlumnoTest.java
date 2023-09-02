@@ -166,6 +166,7 @@ public class AlumnoTest {
         alumno.aprobarAsignatura(a1,10);
         alumno.cursarAsignatura(a2);
         assertEquals(a1.getEstado(), EstadoAsignatura.APROBADA);
+        assertEquals(a1.getNota().get(), 10);
         assertEquals(a2.getEstado(), EstadoAsignatura.CURSADA);
     }
 }

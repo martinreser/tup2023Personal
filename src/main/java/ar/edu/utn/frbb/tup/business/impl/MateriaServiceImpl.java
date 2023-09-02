@@ -6,9 +6,9 @@ import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.Profesor;
 import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
 import ar.edu.utn.frbb.tup.persistence.MateriaDao;
-import ar.edu.utn.frbb.tup.persistence.exception.MateriaConNombreYaCreadoException;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.ProfesorNotFoundException;
+import ar.edu.utn.frbb.tup.persistence.exception.YaExistenteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,14 +22,11 @@ public class MateriaServiceImpl implements MateriaService {
     private ProfesorService profesorService;
 
     @Override
-    public Materia crearMateria(final MateriaDto materiadto) throws ProfesorNotFoundException, MateriaNotFoundException, MateriaConNombreYaCreadoException {
-        if (!dao.comprobarNombreMaterias(materiadto)){
-            throw new MateriaConNombreYaCreadoException("Ya existe una materia con el nombre: " + materiadto.getNombre() + ".");
-        }
+    public Materia crearMateria(final MateriaDto materiadto) throws ProfesorNotFoundException, MateriaNotFoundException, YaExistenteException {
         Materia materia = new Materia();
-        materia.setNombre(materia.getNombre());
-        materia.setAnio(materia.getAnio());
-        materia.setCuatrimestre(materia.getCuatrimestre());
+        materia.setNombre(materiadto.getNombre());
+        materia.setAnio(materiadto.getAnio());
+        materia.setCuatrimestre(materiadto.getCuatrimestre());
         Profesor p = profesorService.buscarProfesorPorId(materiadto.getProfesorId());
         materia.setProfesor(p);
         profesorService.actualizarProfesor(p);
@@ -39,12 +36,12 @@ public class MateriaServiceImpl implements MateriaService {
 
     @Override
     public Materia buscarMateriaPorId(final Integer id) throws MateriaNotFoundException {
-        return dao.findMateriaPorId(id);
+        return dao.findMateriaById(id);
     }
 
     @Override
     public List<Materia> buscarMateriaPorCadena(final String nombreMateria) throws MateriaNotFoundException {
-        return dao.findMateriaPorCadena(nombreMateria);
+        return dao.findMateriaByCadena(nombreMateria);
     }
     @Override
     public List<Materia> getAllMaterias() {
