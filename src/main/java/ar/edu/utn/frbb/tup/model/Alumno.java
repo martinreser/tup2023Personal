@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
@@ -127,5 +128,13 @@ public class Alumno {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Alumno alumno = (Alumno) o;
+        return id == alumno.id && dni == alumno.dni && nombre == alumno.nombre && apellido == alumno.apellido && asignaturas == alumno.asignaturas;
     }
 }

@@ -4,6 +4,7 @@ import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
 import ar.edu.utn.frbb.tup.persistence.exception.CambiarEstadoAsignaturaException;
 import ar.edu.utn.frbb.tup.persistence.exception.NotaNoValidaException;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import java.util.List;

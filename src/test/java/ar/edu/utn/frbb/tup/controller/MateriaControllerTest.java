@@ -59,7 +59,8 @@ public class MateriaControllerTest {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/materia")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(materiaDto))
-                .accept(MediaType.APPLICATION_JSON)).andExpect(status().is2xxSuccessful())
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
                 .andReturn();
 
         Assertions.assertEquals(new Materia(), mapper.readValue(result.getResponse().getContentAsString(), Materia.class));
@@ -169,7 +170,8 @@ public class MateriaControllerTest {
     public void buscarMateriaPorIdIncorrecto() throws Exception {
         Mockito.when(materiaService.buscarMateriaPorId(any(Integer.class))).thenThrow(new MateriaNotFoundException("No se encuentra ninguna materia con el ID: 3."));
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/materia/3")
-                        .accept(MediaType.APPLICATION_JSON)).andExpect(content().json("{\"errorMessage\": \"No se encuentra ninguna materia con el ID: 3.\"}"))
+                        .accept(MediaType.APPLICATION_JSON))
+                        .andExpect(content().json("{\"errorMessage\": \"No se encuentra ninguna materia con el ID: 3.\"}"))
                         .andExpect(status().isNotFound())
                         .andReturn();
     }

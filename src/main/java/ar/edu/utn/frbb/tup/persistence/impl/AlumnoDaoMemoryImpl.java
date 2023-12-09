@@ -105,8 +105,7 @@ public class AlumnoDaoMemoryImpl implements AlumnoDao {
             listaAlumnos.add(a2);
         }
         if (listaAlumnos.isEmpty()){
-            throw new AlumnoEliminadoCorrectamente("El alumno " + alumno.getNombre() + " " + alumno.getApellido() +
-                    " [ID: " + alumno.getId() + "], fue eliminado correctamente.\nYa no quedan alumnos disponibles.");
+            throw new AlumnoEliminadoCorrectamente();
         }
         return listaAlumnos;
     }

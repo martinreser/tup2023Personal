@@ -1,6 +1,6 @@
 package ar.edu.utn.frbb.tup.controller.handler;
 
-import ar.edu.utn.frbb.tup.business.DatoInvalidoException;
+import ar.edu.utn.frbb.tup.business.exception.DatoInvalidoException;
 import ar.edu.utn.frbb.tup.model.exception.CorrelatividadesNoAprobadasException;
 import ar.edu.utn.frbb.tup.model.exception.EstadoIncorrectoException;
 import ar.edu.utn.frbb.tup.persistence.exception.*;
@@ -44,13 +44,13 @@ public class UtnResponseEntityExceptionHandler extends ResponseEntityExceptionHa
 
     @ExceptionHandler(value
             = {ProfesorEliminadoCorrectamente.class, AlumnoEliminadoCorrectamente.class})
-    protected ResponseEntity<Object> todosEliminados(
+    protected ResponseEntity<Object> vacío (
             Exception ex, WebRequest request) {
         String exceptionMessage = ex.getMessage();
         CustomApiError error = new CustomApiError();
         error.setErrorMessage(exceptionMessage);
         return handleExceptionInternal(ex, error,
-                new HttpHeaders(), HttpStatus.OK, request);
+                new HttpHeaders(), HttpStatus.NO_CONTENT, request);
     }
 
 //    @ExceptionHandler(value

@@ -10,7 +10,6 @@ public class CustomApiError {
     private String errorMessage;
 
 
-
     public Integer getErrorCode() {
         return errorCode;
     }

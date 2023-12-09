@@ -1,7 +1,6 @@
 package ar.edu.utn.frbb.tup.persistence;
 
 import ar.edu.utn.frbb.tup.model.Materia;
-import ar.edu.utn.frbb.tup.model.dto.MateriaDto;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.YaExistenteException;
 
@@ -14,7 +13,7 @@ public interface MateriaDao {
 
     // GET
     Materia findMateriaById(Integer id) throws MateriaNotFoundException;
-    List<Materia> findMateriaByCadena(String nombreMateria) throws MateriaNotFoundException;
+    List<Materia> findMateriaByChain(String nombreMateria) throws MateriaNotFoundException;
     List<Materia> getAllMaterias();
 
     void deleteMateriaById(int materiaId);

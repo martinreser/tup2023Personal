@@ -1,7 +1,7 @@
 package ar.edu.utn.frbb.tup.controller;
 
 import ar.edu.utn.frbb.tup.business.AlumnoService;
-import ar.edu.utn.frbb.tup.business.DatoInvalidoException;
+import ar.edu.utn.frbb.tup.business.exception.DatoInvalidoException;
 import ar.edu.utn.frbb.tup.model.Alumno;
 import ar.edu.utn.frbb.tup.model.Asignatura;
 import ar.edu.utn.frbb.tup.model.dto.AlumnoDto;
@@ -23,7 +23,7 @@ public class AlumnoController {
 
     // MÉTODOS POST
     // Crear alumno según body (DTO).
-    @PostMapping("/")
+    @PostMapping
     public Alumno crearAlumno(@RequestBody AlumnoDto alumnoDto) throws DatoInvalidoException {
         return alumnoService.crearAlumno(alumnoDto);
     }

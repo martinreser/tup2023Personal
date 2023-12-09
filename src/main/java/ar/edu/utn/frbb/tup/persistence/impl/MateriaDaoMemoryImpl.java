@@ -44,7 +44,7 @@ public class MateriaDaoMemoryImpl implements MateriaDao {
 
     // Encuentra una materia según una cadena.
     @Override
-    public List<Materia> findMateriaByCadena(final String nombreMateria) throws MateriaNotFoundException {
+    public List<Materia> findMateriaByChain(final String nombreMateria) throws MateriaNotFoundException {
         final List<Materia> listaFiltrada = new ArrayList<>();
         for (Materia materia : repositorioMateria.values()) {
             if (materia.getNombre().toLowerCase().startsWith(nombreMateria.toLowerCase())) {

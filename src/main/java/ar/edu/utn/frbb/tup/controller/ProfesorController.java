@@ -1,14 +1,11 @@
 package ar.edu.utn.frbb.tup.controller;
 
-import ar.edu.utn.frbb.tup.business.DatoInvalidoException;
+import ar.edu.utn.frbb.tup.business.exception.DatoInvalidoException;
 import ar.edu.utn.frbb.tup.business.ProfesorService;
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.Profesor;
 import ar.edu.utn.frbb.tup.model.dto.ProfesorDto;
-import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
-import ar.edu.utn.frbb.tup.persistence.exception.ProfesorEliminadoCorrectamente;
-import ar.edu.utn.frbb.tup.persistence.exception.ProfesorNotFoundException;
-import ar.edu.utn.frbb.tup.persistence.exception.YaExistenteException;
+import ar.edu.utn.frbb.tup.persistence.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

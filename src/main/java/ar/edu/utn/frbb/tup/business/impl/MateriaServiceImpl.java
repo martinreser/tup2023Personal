@@ -41,7 +41,7 @@ public class MateriaServiceImpl implements MateriaService {
 
     @Override
     public List<Materia> buscarMateriaPorCadena(final String nombreMateria) throws MateriaNotFoundException {
-        return dao.findMateriaByCadena(nombreMateria);
+        return dao.findMateriaByChain(nombreMateria);
     }
     @Override
     public List<Materia> getAllMaterias() {

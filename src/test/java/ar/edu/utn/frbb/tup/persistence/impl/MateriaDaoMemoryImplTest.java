@@ -4,7 +4,6 @@ import ar.edu.utn.frbb.tup.controller.handler.UtnResponseEntityExceptionHandler;
 import ar.edu.utn.frbb.tup.model.Materia;
 import ar.edu.utn.frbb.tup.model.Profesor;
 import ar.edu.utn.frbb.tup.persistence.exception.MateriaNotFoundException;
-import ar.edu.utn.frbb.tup.persistence.exception.ProfesorNotFoundException;
 import ar.edu.utn.frbb.tup.persistence.exception.YaExistenteException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +14,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -80,7 +78,7 @@ public class MateriaDaoMemoryImplTest {
         int[] arrayVacio = new int[0];
         materiaDaoMemory.save(materiaCargada1, arrayVacio);
         materiaDaoMemory.save(materiaCargada2, arrayVacio);
-        List<Materia> materiasEncontradas = materiaDaoMemory.findMateriaByCadena("Me");
+        List<Materia> materiasEncontradas = materiaDaoMemory.findMateriaByChain("Me");
         assertEquals(true, materiasEncontradas.contains(materiaCargada1));
         assertEquals(true, materiasEncontradas.contains(materiaCargada2));
     }
@@ -93,7 +91,7 @@ public class MateriaDaoMemoryImplTest {
         materiaDaoMemory.save(materiaCargada1, arrayVacio);
         materiaDaoMemory.save(materiaCargada2, arrayVacio);
         MateriaNotFoundException exception = assertThrows(MateriaNotFoundException.class, () -> {
-            materiaDaoMemory.findMateriaByCadena("Mer");
+            materiaDaoMemory.findMateriaByChain("Mer");
         });
         assertEquals("No se encuentra ninguna materia que comience con el nombre 'Mer'.", exception.getMessage());
     }

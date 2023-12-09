@@ -90,8 +90,7 @@ public class ProfesorDaoMemoryImpl implements ProfesorDao {
             listaProfesores.add(profesor1);
         }
         if (listaProfesores.isEmpty()){
-            throw new ProfesorEliminadoCorrectamente ("El profesor " + profesor.getNombre() + " " + profesor.getApellido() +
-                    " [ID: " + profesor.getId() + "], fue eliminado correctamente.\nYa no quedan profesores disponibles.");
+            throw new ProfesorEliminadoCorrectamente ();
         }
         return listaProfesores;
     }
