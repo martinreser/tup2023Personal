@@ -66,8 +66,8 @@ public class ProfesorServiceImpl implements ProfesorService {
                 !profesorDto.getApellido().equals("") && !profesorDto.getApellido().matches(".*\\d+.*")){
             profesor.setApellido(profesorDto.getApellido());;
         }
-        if (profesorDto.getApellido() != null &&
-                !profesorDto.getApellido().equals("") && !profesorDto.getApellido().matches(".*\\d+.*")){
+        if (profesorDto.getTitulo() != null &&
+                !profesorDto.getTitulo().equals("") && !profesorDto.getTitulo().matches(".*\\d+.*")){
             profesor.setTitulo(profesorDto.getTitulo());
         }
         profesorDao.update(idProfesor, profesor);

@@ -28,9 +28,9 @@ public class MateriaServiceImpl implements MateriaService {
         materia.setAnio(materiadto.getAnio());
         materia.setCuatrimestre(materiadto.getCuatrimestre());
         Profesor p = profesorService.buscarProfesorPorId(materiadto.getProfesorId());
+        dao.save(materia, materiadto.getCorrelatividades());
         materia.setProfesor(p);
         profesorService.actualizarProfesor(p);
-        dao.save(materia, materiadto.getCorrelatividades());
         return materia;
     }
 
